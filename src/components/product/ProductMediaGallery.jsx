@@ -204,7 +204,7 @@ className="w-full h-full object-contain rounded-b-xl flex items-center justify-c
             </div>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center h-[300px] border rounded-lg">
+          <div className={galleryClassName}>
             <TbCameraPlus className="h-10 w-10 mb-2 text-gray-400" />
             <p>No media</p>
           </div>
@@ -270,8 +270,6 @@ className="w-full h-full object-contain rounded-b-xl flex items-center justify-c
                 )}
               </div>
             ))}
-
-            {/* Add new media button (only editable) */}
             {isEditable && (
               <>
                 <Menu as="div" className="flex-shrink-0">

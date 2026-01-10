@@ -18,7 +18,10 @@ import { AiOutlineShopping } from "react-icons/ai";
 import { PiMagnifyingGlassThin } from "react-icons/pi";
 import { PiShoppingBagOpenThin } from "react-icons/pi";
 import { HiOutlineBars3 } from "react-icons/hi2";
-
+import UserSettingsLayout from "../UserSettings/UserSettingsLayout";
+import { signOut } from "firebase/auth";
+import { authLogout } from "../../redux/user/userSlice";
+import { auth } from "../../service/firebase";
 const navigation = [
   { name: "Accueil", href: "/" },
   { name: "Produits", href: "/shop" },
@@ -30,11 +33,20 @@ export default function Header() {
   const location = useLocation();
   const dispatch = useDispatch();
   const totalQty = useSelector((state) => state.cart.totalQuantity);
-  const { isAuthenticated } = useSelector((state) => state.user);
+  const { userInfo, isAuthenticated } = useSelector((state) => state.user);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchMenuOpen, setSearchMenuOpen] = useState(false);
-
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth); // Firebase logout
+      dispatch(authLogout()); // Clear Redux state
+      //  navigate("/login"); // Redirect to login
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  };
   return (
     <>
       <HeaderTop />
@@ -102,15 +114,38 @@ export default function Header() {
         </button>
 
         {/* Desktop user icon only */}
-        <div className="hidden md:block">
-          {isAuthenticated ? (
-            <UserIcon className="w-6 h-6 text-black" />
-          ) : (
-            <Link to="/login">
-              <UserIcon className="w-6 h-6 text-black" />
-            </Link>
-          )}
-        </div>
+        {isAuthenticated && userInfo ? (
+              <>
+                <div className="relative inline-block">
+                  <img
+                    className={`w-6.5 h-6.5 rounded-full transition-colorstext-black ring-1 ring-black
+                        `}
+                   // src={userImg}
+                    alt="profile"
+                    onClick={() => setUserMenuOpen(true)}
+                  />
+                  {/* Online indicator */}
+                  <span className="absolute bottom-0 right-0 block w-2 h-2 bg-green-500 rounded-full ring-2 ring-white"></span>
+                </div>
+
+                <CustomDialog
+                  open={userMenuOpen}
+                  onClose={() => setUserMenuOpen(false)}
+                  position="right"
+                >
+                  <UserSettingsLayout
+                    setUserMenuOpen={setUserMenuOpen}
+                    handleSignOut={handleSignOut}
+                  />
+                </CustomDialog>
+              </>
+            ) : (
+              <Link to="/login">
+                <UserIcon
+                  className={`w-6 h-6 transition-colors  text-black`}
+                />
+              </Link>
+            )}
       </div>
     </div>
   </div>
