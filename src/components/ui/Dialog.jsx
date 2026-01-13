@@ -39,7 +39,7 @@ export default function CustomDialog({
         </Transition.Child>
 
         {/* Panel Container */}
-        <div className={`fixed ${positionClasses[position]} overflow-hidden `}>
+        <div className={`fixed ${positionClasses[position]} overflow-hidden  `}>
           <Transition.Child
             as={Fragment}
             enter="transform transition ease-out duration-300"
@@ -49,7 +49,7 @@ export default function CustomDialog({
             leaveFrom="translate-x-0 translate-y-0"
             leaveTo={translateClasses[position]}
           >
-            <Dialog.Panel className="w-screen max-w-md bg-white pt-20 shadow-xl">
+            <Dialog.Panel className="w-screen md:max-w-sm  max-w-md bg-white  pt-20 shadow-xl">
               {children}
             </Dialog.Panel>
           </Transition.Child>

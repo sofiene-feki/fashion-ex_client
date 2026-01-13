@@ -33,7 +33,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const API_BASE_URL_MEDIA = "https://skands-server.onrender.com";
+    const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
 
 export default function ProductDetails() {
   const { slug } = useParams(); // 👈 make sure your route param is `:slug`
@@ -60,8 +60,8 @@ export default function ProductDetails() {
     category: "",
     subCategory: "",
     media: [],
-    colors: [],
-    sizes: [],
+    colors: [""],
+    sizes: [""],
   };
 
   const [product, setProduct] = useState(isCreate ? emptyProduct : null);
@@ -343,7 +343,7 @@ navigate('/checkout'); // Redirect to cart page
       if (Array.isArray(product.colors)) {
         // Prepare color payload without files
         const colorsPayload = product.colors.map((c) => ({
-          _id: c._id || null, // keep ID for existing colors
+        
           name: c.name,
           value: c.value,
           type: c.type || "image",
@@ -445,9 +445,9 @@ navigate('/checkout'); // Redirect to cart page
   };
 
   return (
-    <div className="md:py-20">
+    <div className="md:py-6 py-2">
       {user && (
-        <div className="flex  bg-white max-w-7xl mx-auto items-center justify-between border-b border-gray-200 pb-2  mb-6">
+        <div className="flex top-14.5 z-10 sticky bg-white max-w-5xl mx-auto items-center justify-between border-b border-gray-200 py-2 px-2 shadow-xl">
           {/* Center title */}
           <h1 className="md:text-xl text-base font-semibold text-gray-800">
             {isCreate ? "Créer un produit" : isEdit ? "Modifier produit" : ""}
@@ -518,23 +518,28 @@ navigate('/checkout'); // Redirect to cart page
           </div>
         </div>
       )}
-      <div className="max-w-7xl mx-auto lg:flex lg:gap-12">
+      <div className="max-w-5xl mx-auto lg:flex lg:gap-12">
         {/* LEFT: Media gallery */}
         {loading ? (
           <div className=" w-full h-[400px] lg:w-1/2 md:mb-6  lg:mb-0 bg-gray-200 rounded-lg animate-pulse"></div>
         ) : (
-          <div className="w-full lg:w-1/2">
-            <ProductMediaGallery
-              media={product?.media} // pass media array directly
-              selectedMedia={selectedMedia} // currently selected
-              onSelectMedia={setSelectedMedia} // when clicking thumbnail
-              onAddMedia={handleFileUpload} // upload handler
-              onDeleteMedia={deleteMedia} // delete handler
-              isEditable={isEdit || isCreate} // edit/create flag
-              setSelectedMedia={setSelectedMedia}
-              galleryClassName="flex flex-col items-center justify-center w-full h-80 md:w-1/1 md:h-96 bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl text-gray-400 text-center cursor-pointer hover:bg-gray-200 transition"
-            />
-          </div>
+         <div
+  className={`w-full lg:w-1/2 ${
+    isCreate ? "p-3 mt-2" : ""
+  }`}
+>
+  <ProductMediaGallery
+    media={product?.media}
+    selectedMedia={selectedMedia}
+    onSelectMedia={setSelectedMedia}
+    onAddMedia={handleFileUpload}
+    onDeleteMedia={deleteMedia}
+    isEditable={isEdit || isCreate}
+    setSelectedMedia={setSelectedMedia}
+    galleryClassName="flex flex-col items-center justify-center w-full h-80 md:w-1/1 md:h-96 bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl text-gray-400 text-center cursor-pointer hover:bg-gray-200 transition"
+  />
+</div>
+
         )}
 
         {/* RIGHT: Product Info */}

@@ -19,7 +19,7 @@ export default function CustomModal({
       <DialogBackdrop className="fixed inset-0 bg-gray-500/75" />
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-center justify-center p-4  sm:p-0">
+        <div className="flex min-h-full w-full px-4 items-center justify-center sm:p-0">
           <DialogPanel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl">
             {/* Header */}
             <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -41,22 +41,7 @@ export default function CustomModal({
             </div>
 
             {/* Footer */}
-            <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-500 sm:ml-3 sm:w-auto"
-              >
-                Confirmer
-              </button>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs hover:bg-gray-50 sm:mt-0 sm:w-auto"
-              >
-                Annuler
-              </button>
-            </div>
+        
           </DialogPanel>
         </div>
       </div>

@@ -13,7 +13,7 @@ import {
 import { getStorySlides } from "../../functions/storySlide";
 import { NextArrow, PrevArrow } from "../ui";
 
-const API_BASE_URL_MEDIA = "https://skands-server.onrender.com";
+    const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
 
 export default function Story() {
   const { userInfo } = useSelector((s) => s.user);

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
-import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
+import { ChevronDoubleRightIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { TbCameraPlus } from "react-icons/tb";
 import { useSelector } from "react-redux";
 
 import CustomModal from "../ui/Modal";
 import { Input } from "../ui";
 import { createBanner, getBanners, removeBanner } from "../../functions/banner";
+import ProductMediaGallery from "../product/ProductMediaGallery";
 
 export default function Banner() {
   const [open, setOpen] = useState(false);
@@ -22,7 +23,7 @@ export default function Banner() {
 
   const user = useSelector((state) => state.user.userInfo);
 
-const API_BASE_URL_MEDIA = "https://skands-server.onrender.com";
+    const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
 //  const API_BASE_URL_MEDIA = "http://localhost:8000";
 
   const settings = {
@@ -196,98 +197,142 @@ Discover the Latest Trends of the New Season.
         setOpen={setOpen}
         title="Importer une photo"
         message={
-          <div className="space-y-4">
+          <div className="space-y-4 ">
             {/* Slides grid with add new card first */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 ">
               {/* Add New Slide Card */}
-              <div className="relative border border-gray-200 flex flex-col">
-                <div className="w-full h-40 bg-gray-100 flex items-center justify-center rounded text-gray-400">
-                  {newSlide.preview ? (
-                    <img
-                      src={newSlide.preview}
-                      alt="Preview"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files[0];
-                        if (file) {
-                          const previewUrl = URL.createObjectURL(file);
-                          setNewSlide({
-                            ...newSlide,
-                            file,
-                            img: previewUrl, // 👈 set img so AddSlide works
-                            preview: previewUrl,
-                          });
-                        }
-                      }}
-                    />
-                  )}
-                </div>
-                <div className="mt-2 px-2 space-y-2">
-                  <Input
-                    name="Title"
-                    placeholder="Title"
-                    value={newSlide.title}
-                    onChange={(e) =>
-                      setNewSlide({ ...newSlide, title: e.target.value })
-                    }
-                    className="w-full border px-2 py-1 rounded"
-                  />
 
-                  <Input
-                    name="Button Text"
-                    placeholder="Button Text"
-                    value={newSlide.button}
-                    onChange={(e) =>
-                      setNewSlide({ ...newSlide, button: e.target.value })
-                    }
-                    className="w-full border px-2 py-1 rounded"
-                  />
-                  <Input
-                    name="Link"
-                    placeholder="Link"
-                    value={newSlide.link}
-                    onChange={(e) =>
-                      setNewSlide({ ...newSlide, link: e.target.value })
-                    }
-                    className="w-full border px-2 py-1 rounded"
-                  />
-                  <button
-                    onClick={handleSubmit}
-                    className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
-                  >
-                    Add Slide
-                  </button>
-                </div>
-              </div>
+<div className="relative  flex flex-col rounded-md shadow-xl ">
+  {/* Media */}
+        <div className="border border-gray-300 rounded-md shadow-sm  p-4">
+           <ProductMediaGallery
+    mode="single"
+    media={newSlide.preview ? [{
+      src: newSlide.preview,
+      type: "image",
+      file: newSlide.file,
+    }] : []}
+    selectedMedia={
+      newSlide.preview
+        ? {
+            src: newSlide.preview,
+            type: "image",
+            file: newSlide.file,
+          }
+        : null
+    }
+    onSelectMedia={(media) => {
+      if (!media) {
+        setNewSlide((prev) => ({
+          ...prev,
+          file: null,
+          preview: null,
+          img: null,
+        }));
+      }
+    }}
+    onAddMedia={(e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const previewUrl = URL.createObjectURL(file);
+
+      setNewSlide((prev) => ({
+        ...prev,
+        file,
+        img: previewUrl,     // 👈 needed for backend
+        preview: previewUrl, // 👈 preview for UI
+      }));
+    }}
+    onDeleteMedia={() => {
+      setNewSlide((prev) => ({
+        ...prev,
+        file: null,
+        preview: null,
+        img: null,
+      }));
+    }}
+    isEditable
+    galleryClassName="w-full h-40 bg-gray-100 border-b border-dashed rounded-md border-gray-300 
+                      rounded-t text-gray-400 flex items-center justify-center"
+  />
+   <div className="mt-2  space-y-2">
+    <Input
+      name="Title"
+      placeholder="Title"
+      value={newSlide.title}
+      onChange={(e) =>
+        setNewSlide({ ...newSlide, title: e.target.value })
+      }
+      className="w-full border px-2 py-1 rounded"
+    />
+
+    <Input
+      name="Button Text"
+      placeholder="Button Text"
+      value={newSlide.button}
+      onChange={(e) =>
+        setNewSlide({ ...newSlide, button: e.target.value })
+      }
+      className="w-full border px-2 py-1 rounded"
+    />
+
+    <Input
+      name="Link"
+      placeholder="Link"
+      value={newSlide.link}
+      onChange={(e) =>
+        setNewSlide({ ...newSlide, link: e.target.value })
+      }
+      className="w-full border px-2 py-1 rounded"
+    />
+
+    <button
+      onClick={handleSubmit}
+             className="w-full py-2 text-sm font-semibold tracking-widest uppercase rounded-md shadow border border-green-200 bg-green-50 text-green-600 hover:bg-green-100 transition disabled:opacity-50"
+
+    >
+     + Add Slide
+    </button>
+  </div>
+        </div>
+
+ 
+
+  {/* Content */}
+ 
+</div>
+
 
               {/* Existing slides */}
               {slides.map((slide, index) => (
                 <div
                   key={index}
-                  className="relative border border-gray-200  overflow-hidden"
+                  className="relative border border-gray-200  overflow-hidden rounded-md shadow-xl"
                 >
                   <img
                     src={slide.img}
                     alt={slide.title}
                     className="w-full h-70 object-cover"
                   />
-                  <div className="p-2">
-                    <p className="font-bold">{slide.title}</p>
-                    <p className="text-sm">
+                  <div className="p-2 flex justify-between">
+                    <div>
+                       <p className="font-bold">{slide.title}</p>
+                    <p className="text-xs">
                       {slide.button} → {slide.link}
                     </p>
-                  </div>
-                  <button
+                    </div>
+                    <div className="rounded-full">
+                          <button
                     onClick={() => console.log(slide._id)}
-                    className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 text-xs rounded"
-                  >
-                    Delete
+                     className="p-2 rounded-full bg-gray-100 hover:bg-red-600 hover:text-white transition"
+                             >
+                               <TrashIcon className="w-4 h-4" />
                   </button>
+                    </div>
+                 
+                  </div>
+                
                 </div>
               ))}
             </div>

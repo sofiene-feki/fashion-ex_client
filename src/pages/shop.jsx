@@ -51,7 +51,7 @@ export default function Shop() {
   const start = currentPage * productsPerPage + 1;
   const end = Math.min((currentPage + 1) * productsPerPage, totalProducts);
 
-const API_BASE_URL_MEDIA = "https://skands-server.onrender.com";
+    const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
 
   // Normalize single product or array of products
   const normalizeMediaSrc = (input) => {

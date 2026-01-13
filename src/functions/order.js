@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Your app’s own API (backend)
-const API_BASE_URL = "https://skands-server.onrender.com/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // ✅ Get all orders
 export const getOrders = async () => {

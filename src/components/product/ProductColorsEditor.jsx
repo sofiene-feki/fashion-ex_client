@@ -48,89 +48,93 @@ export default function ProductColorsEditor({
   };
 
   return (
-    <div className="rounded-lg border shadow-sm border-gray-300 p-2">
-      {product.colors?.map((c, i) => (
-        <div key={i} className="flex gap-2 mt-2 items-center">
-          {/* Color name input */}
-          <Input
-            type="text"
-            value={c.name}
-            onChange={(e) => handleChangeProduct(e, i, "name", "colors")}
-            placeholder="Color Name"
-            className="border rounded p-2 flex-1"
-          />
+   <div className="rounded-lg border shadow-sm border-gray-300 p-3 space-y-2">
+  {product.colors?.map((c, i) => (
+    <div
+      key={i}
+      className="flex items-center gap-x-2"
+    >
+      {/* Color name input */}
+      <Input
+        type="text"
+        value={c.name}
+        onChange={(e) => handleChangeProduct(e, i, "name", "colors")}
+        placeholder="Color name"
+        className="h-10 flex-1 min-w-[140px]"
+      />
 
-          {/* Color picker */}
-          <label className="relative">
-            <input
-              type="color"
-              value={c.value || "#000000"}
-              onChange={(e) => handleChangeProduct(e, i, "value", "colors")}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            />
-            <div
-              className="h-10 w-10 rounded-full border border-gray-300 cursor-pointer flex items-center justify-center transition-all duration-300"
-              style={{
-                background: c.value
-                  ? c.value
-                  : "conic-gradient(red, yellow, lime, cyan, blue, magenta, red)",
-              }}
-            >
-              {!c.value && (
-                <div className="flex items-center justify-center bg-white rounded-full w-7 h-7">
-                  <span className="text-black text-2xl font-bold leading-none">
-                    +
-                  </span>
-                </div>
-              )}
+      {/* Color picker */}
+      <label className="relative shrink-0">
+        <input
+          type="color"
+          value={c.value || "#000000"}
+          onChange={(e) => handleChangeProduct(e, i, "value", "colors")}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        />
+        <div
+          className="h-10 w-10 rounded-full border border-gray-300 cursor-pointer 
+                     flex items-center justify-center transition"
+          style={{
+            background: c.value
+              ? c.value
+              : "conic-gradient(red, yellow, lime, cyan, blue, magenta, red)",
+          }}
+        >
+          {!c.value && (
+            <div className="flex items-center justify-center bg-white rounded-full w-6 h-6">
+              <span className="text-black text-lg leading-none">+</span>
             </div>
-          </label>
-
-          {/* Image preview or upload button */}
-          {c.src ? (
-            <div className="w-10 h-10 rounded-full  border">
-              <img
-                src={c.src}
-                alt={c.alt || "color preview"}
-                className="w-full h-full  object-cover"
-              />
-            </div>
-          ) : (
-            <label
-              className="relative flex flex-col items-center justify-center w-auto h-auto
-             border-2 border-dashed border-gray-300 rounded-full cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 transition"
-            >
-              <div className="flex flex-col items-center justify-center text-gray-500">
-                <TbCameraPlus className="h-6 w-6 text-indigo-500" />
-              </div>
-              <input
-                type="file"
-                accept="image/*,video/*,.mov,.mp4,.m4v"
-                onChange={(e) => handleFileUpload(e, i)} // ✅ Update the correct color
-                className="hidden"
-              />
-            </label>
           )}
-
-          {/* Delete color button */}
-          <button
-            onClick={() => handleRemoveColor(i)}
-            className="bg-red-50 text-red-500 border border-gray-200 p-2 rounded-full shadow-sm 
-                       hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-1 
-                       focus:ring-red-400 transition mb-1"
-          >
-            <TrashIcon className="h-5 w-5" />
-          </button>
         </div>
-      ))}
+      </label>
 
-      {/* Add new color button */}
+      {/* Image preview or upload */}
+      {c.src ? (
+        <div className="w-10 h-10 rounded-full border overflow-hidden shrink-0">
+          <img
+            src={c.src}
+            alt={c.alt || "color preview"}
+            className="w-full h-full rounded-full object-cover"
+          />
+        </div>
+      ) : (
+        <label
+          className="w-10 h-10 shrink-0 flex items-center justify-center
+                     border-2 border-dashed border-gray-300 rounded-full
+                     cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 transition"
+        >
+          <TbCameraPlus className="h-5 w-5 text-indigo-500" />
+          <input
+            type="file"
+            accept="image/*,video/*,.mov,.mp4,.m4v"
+            onChange={(e) => handleFileUpload(e, i)}
+            className="hidden"
+          />
+        </label>
+      )}
+
+      {/* Delete button */}
       <button
-        onClick={handleAddColor}
-        className="mt-2 bg-[#87a736] text-white px-4 py-1 rounded w-full md:w-auto shadow-sm"
+        onClick={() => handleRemoveColor(i)}
+        className="w-10 h-10 shrink-0 flex items-center justify-center
+                   bg-red-50 text-red-500 border border-gray-200 rounded-full
+                   hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400
+                   transition"
       >
-        + Add Color
+        <TrashIcon className="h-5 w-5" />
       </button>
     </div>
+  ))}
+
+  {/* Add new color */}
+  <button
+    onClick={handleAddColor}
+    className=" w-full md:w-auto px-4 py-2 text-sm
+               bg-[#87a736] text-white rounded shadow-sm"
+  >
+    + Add Color
+  </button>
+</div>
+
   );
 }

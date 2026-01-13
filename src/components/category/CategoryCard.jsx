@@ -2,16 +2,16 @@ import React from "react";
 import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
 
 export default function CategoryCard({ category, onDelete, onEdit }) {
-  const image = category.media?.[0]?.url;
+  const image =  category.image; // support old & new
+    const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
 
   return (
-    <div className="group relative bg-white border border-gray-100 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)]">
-      
+    <div className="group relative bg-white border border-gray-100 rounded-lg overflow-hidden">
       {/* Image */}
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-48 overflow-hidden rounded-t-md">
         {image ? (
           <img
-            src={image}
+            src={`${API_BASE_URL_MEDIA}${image}`}
             alt={category.name}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
@@ -21,24 +21,26 @@ export default function CategoryCard({ category, onDelete, onEdit }) {
           </div>
         )}
 
-        {/* Luxury overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition" />
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/5 to-transparent transition" />
       </div>
 
       {/* Content */}
-      <div className="px-6 py-5 flex items-center justify-between">
+      <div className="px-3 py-2 border-t border-gray-200 rounded-b-md flex items-center justify-between shadow-sm">
         <h4 className="text-sm font-semibold tracking-widest uppercase text-gray-900">
           {category.name}
         </h4>
 
         {/* Actions */}
-        <div className="flex gap-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-          <button
-            onClick={onEdit}
-            className="p-2 rounded-full bg-gray-100 hover:bg-gray-900 hover:text-white transition"
-          >
-            <PencilIcon className="w-4 h-4" />
-          </button>
+        <div className="flex gap-2">
+          {onEdit && (
+            <button
+              onClick={onEdit}
+              className="p-2 rounded-full bg-gray-100 hover:bg-gray-900 hover:text-white transition"
+            >
+              <PencilIcon className="w-4 h-4" />
+            </button>
+          )}
 
           <button
             onClick={onDelete}
@@ -48,9 +50,6 @@ export default function CategoryCard({ category, onDelete, onEdit }) {
           </button>
         </div>
       </div>
-
-      {/* Bottom accent line */}
-      <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-900 to-transparent opacity-0 group-hover:opacity-100 transition" />
     </div>
   );
 }
