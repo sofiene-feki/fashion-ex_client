@@ -193,26 +193,26 @@ export default function CustomToolbar({
         <div className="gap-2">
           <button
             onClick={handleModalOpen} // <-- open modal
-            className={`items-center gap-1 px-1 md:px-2 py-2 bg-green-50 text-green-700 rounded-xl shadow-sm text-xs md:text-xs hover:bg-green-100 transition
+            className={`items-center gap-1 px-2  md:px-2 py-2 bg-blue-50 border border-blue-700 hover:bg-blue-100 text-blue-700 rounded-xl shadow-sm text-xs md:text-xs transition
             ${searchExpanded ? "hidden sm:inline-flex" : "inline-flex"}`}
           >
-            <PlusIcon className="w-4 h-4 md:h-6 md:w-6" />
-            Crée une commande
+            <PlusIcon className="w-4 h-4 " />
+            Crée 
           </button>
           <button
             disabled={loadingSelectedRows}
             onClick={handleSendSelectedRows}
-            className={`items-center gap-1 px-1 md:px-2 py-2 rounded-xl shadow-sm text-xs md:text-xs transition
+            className={`items-center gap-1 px-2 md:px-2 py-2 rounded-xl shadow-sm text-xs md:text-xs transition ml-2
     ${
       loadingSelectedRows
         ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-        : "bg-green-50 text-green-700 hover:bg-green-100"
+        : "bg-blue-50 text-blue-700 border border-blue-700 hover:bg-blue-100"
     }
     ${searchExpanded ? "hidden sm:inline-flex" : "inline-flex"}
   `}
           >
-            <LiaShippingFastSolid className="w-4 h-4 md:h-6 md:w-6" />
-            {loadingSelectedRows ? "Envoi..." : "Synchronisation"}
+            <LiaShippingFastSolid className="w-4 h-4 " />
+            {loadingSelectedRows ? "Envoi..." : "Synchro"}
           </button>
         </div>
 
@@ -224,7 +224,7 @@ export default function CustomToolbar({
           >
             <Tooltip title="Columns">
               <ColumnsPanelTrigger render={<ToolbarButton />}>
-                <ViewColumnIcon sx={{ color: "#2c2d84" }} />
+                <ViewColumnIcon className="text-blue-700" />
               </ColumnsPanelTrigger>
             </Tooltip>
             <Tooltip title="Filters">
@@ -236,7 +236,7 @@ export default function CustomToolbar({
                       color="primary"
                       variant="dot"
                     >
-                      <FilterListIcon sx={{ color: "#2c2d84" }} />
+                      <FilterListIcon className="text-blue-700" />
                     </Badge>
                   </ToolbarButton>
                 )}
@@ -252,7 +252,7 @@ export default function CustomToolbar({
                 aria-expanded={exportMenuOpen ? "true" : undefined}
                 onClick={() => setExportMenuOpen(true)}
               >
-                <FileDownloadIcon sx={{ color: "#2c2d84" }} />
+                <FileDownloadIcon className="text-blue-700" />
               </ToolbarButton>
             </Tooltip>
           </div>
@@ -272,7 +272,7 @@ export default function CustomToolbar({
                       color="default"
                       aria-disabled={state.expanded}
                     >
-                      <SearchIcon sx={{ color: "#2c2d84" }} />
+                      <SearchIcon className="text-blue-700" />
                     </StyledToolbarButton>
                   </Tooltip>
                 );

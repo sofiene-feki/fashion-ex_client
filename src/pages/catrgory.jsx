@@ -90,13 +90,11 @@ export default function Category() {
     fetchData();
   }, [Category, currentPage, productsPerPage, sortOption]);
 
-  if (loading) return <p>Loading products...</p>;
-
   const start = currentPage * productsPerPage + 1;
   const end = Math.min((currentPage + 1) * productsPerPage, totalProducts);
 
   return (
-    <main className="mx-auto max-w-7xl  px-4 py-10 sm:px-6 lg:px-8">
+    <main className="mx-auto max-w-7xl  px-4 py-4 sm:px-6 lg:px-8">
       <Header
         setMobileFiltersOpen={setMobileFiltersOpen}
         formattedCategory={Category}

@@ -9,7 +9,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import logo from "../../assets/bragaoui.png";
-import logoBlack from "../../assets/bragaouiBlack.png";
+import logoBlack from "../../assets/bragaouiBlack.jpg";
 import { openCart } from "../../redux/ui/cartDrawer";
 import CustomDialog from "../ui/Dialog";
 import Search from "./Search";
@@ -51,105 +51,104 @@ export default function Header() {
     <>
       <HeaderTop />
       {/* ===== STICKY NAV (UNDER BANNER) ===== */}
-   <nav className="sticky top-0 z-40 bg-white border-b border-black/10">
-  <div className="mx-auto max-w-7xl px-5 relative">
-    <div className="flex h-14 items-center justify-between">
+      <nav className="sticky top-0 z-40 bg-white border-b border-black/10">
+        <div className="mx-auto max-w-7xl px-5 relative">
+          <div className="flex h-14 items-center justify-between">
+            {/* ===== LEFT (MOBILE MENU) ===== */}
+            <div className="flex items-center text-[10px] mt-1 md:hidden">
+              <button onClick={() => setMobileMenuOpen(true)}>
+                <HiOutlineBars3 className="w-7 h-7 text-gray-500" />
+                Menu
+              </button>
+            </div>
 
-      {/* ===== LEFT (MOBILE MENU) ===== */}
-      <div className="flex items-center text-[10px] mt-1 md:hidden">
-        <button onClick={() => setMobileMenuOpen(true)}>
-          <HiOutlineBars3 className="w-7 h-7 text-gray-500" />
-          Menu
-        </button>
-      </div>
-
-      {/* ===== LOGO (CENTER ON MOBILE, LEFT ON DESKTOP) ===== */}
-      <Link
-        to="/"
-        className="
+            {/* ===== LOGO (CENTER ON MOBILE, LEFT ON DESKTOP) ===== */}
+            <Link
+              to="/"
+              className="
           absolute left-1/2 -translate-x-1/2
           md:static md:translate-x-0
           flex items-center h-10
         "
-      >
-        <img
-          src={logoBlack}
-          alt="Logo"
-          className="h-12 w-auto"
-          draggable={false}
-        />
-      </Link>
-
-      {/* ===== DESKTOP MENU ===== */}
-      <ul className="hidden md:flex items-center gap-8">
-        {navigation.map((item) => (
-          <li key={item.name}>
-            <Link
-              to={item.href}
-              className={`text-sm uppercase tracking-wide ${
-                location.pathname === item.href
-                  ? "text-black font-semibold"
-                  : "text-gray-600"
-              }`}
             >
-              {item.name}
+              <img
+                src={logoBlack}
+                alt="Logo"
+                className="h-12 w-auto"
+                draggable={false}
+              />
             </Link>
-          </li>
-        ))}
-      </ul>
 
-      {/* ===== RIGHT ACTIONS ===== */}
-      <div className="flex items-center gap-4">
-        <button onClick={() => setSearchMenuOpen(true)}>
-          <PiMagnifyingGlassThin className="w-6 h-6 text-black" />
-        </button>
+            {/* ===== DESKTOP MENU ===== */}
+            <ul className="hidden md:flex items-center gap-8">
+              {navigation.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    to={item.href}
+                    className={`text-sm uppercase tracking-wide ${
+                      location.pathname === item.href
+                        ? "text-black font-semibold"
+                        : "text-gray-600"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
 
-        <button onClick={() => dispatch(openCart())} className="relative">
-          <PiShoppingBagOpenThin className="w-6 h-8 text-black" />
-          {totalQty > 0 && (
-            <span className="absolute -top-1 -right-3 bg-black text-white text-xs px-1.5 py-0.5 rounded-full">
-              {totalQty}
-            </span>
-          )}
-        </button>
+            {/* ===== RIGHT ACTIONS ===== */}
+            <div className="flex items-center gap-4">
+              <button onClick={() => setSearchMenuOpen(true)}>
+                <PiMagnifyingGlassThin className="w-6 h-6 text-black" />
+              </button>
 
-        {/* Desktop user icon only */}
-        {isAuthenticated && userInfo ? (
-              <>
-                <div className="relative inline-block">
-                  <img
-                    className={`w-6.5 h-6.5 rounded-full transition-colorstext-black ring-1 ring-black
+              <button onClick={() => dispatch(openCart())} className="relative">
+                <PiShoppingBagOpenThin className="w-6 h-8 text-black" />
+                {totalQty > 0 && (
+                  <span className="absolute -top-1 -right-3 bg-black text-white text-xs px-1.5 py-0.5 rounded-full">
+                    {totalQty}
+                  </span>
+                )}
+              </button>
+
+              {/* Desktop user icon only */}
+              {isAuthenticated && userInfo ? (
+                <>
+                  <div className="relative inline-block">
+                    <img
+                      className={`w-6.5 h-6.5 rounded-full transition-colorstext-black ring-1 ring-black
                         `}
-                   // src={userImg}
-                    alt="profile"
-                    onClick={() => setUserMenuOpen(true)}
-                  />
-                  {/* Online indicator */}
-                  <span className="absolute bottom-0 right-0 block w-2 h-2 bg-green-500 rounded-full ring-2 ring-white"></span>
-                </div>
+                      // src={userImg}
+                      alt="profile"
+                      onClick={() => setUserMenuOpen(true)}
+                    />
+                    {/* Online indicator */}
+                    <span className="absolute bottom-0 right-0 block w-2 h-2 bg-green-500 rounded-full ring-2 ring-white"></span>
+                  </div>
 
-                <CustomDialog
-                  open={userMenuOpen}
-                  onClose={() => setUserMenuOpen(false)}
-                  position="right"
-                >
-                  <UserSettingsLayout
-                    setUserMenuOpen={setUserMenuOpen}
-                    handleSignOut={handleSignOut}
+                  <CustomDialog
+                    open={userMenuOpen}
+                    onClose={() => setUserMenuOpen(false)}
+                    position="right"
+                  >
+                    <UserSettingsLayout
+                      setUserMenuOpen={setUserMenuOpen}
+                      handleSignOut={handleSignOut}
+                    />
+                  </CustomDialog>
+                </>
+              ) : (
+                <Link to="/login">
+                  <UserIcon
+                    className={`w-6 h-6 transition-colors  text-black`}
                   />
-                </CustomDialog>
-              </>
-            ) : (
-              <Link to="/login">
-                <UserIcon
-                  className={`w-6 h-6 transition-colors  text-black`}
-                />
-              </Link>
-            )}
-      </div>
-    </div>
-  </div>
-</nav>
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      </nav>
 
       {/* ===== SEARCH DRAWER ===== */}
       <CustomDialog

@@ -48,7 +48,7 @@ export default function OrderDetail() {
 
   return (
     <div
-      className="max-w-4xl mx-auto my-15 bg-white md:p-4 p-1 print:shadow-none print:p-0 print:rounded-none print:max-w-full print:text-black"
+      className="max-w-4xl mx-auto bg-white md:p-4 p-1 print:shadow-none print:p-0 print:rounded-none print:max-w-full print:text-black"
       ref={invoiceRef}
     >
       <div className="print:hidden flex my-3 px-1 justify-end items-center gap-x-3">
@@ -183,8 +183,8 @@ export default function OrderDetail() {
                     </td>
 
                     {/* Example price/qty column (if you want to keep them) */}
+                                        <td className="p-2 border text-center">{unitPrice} dt</td>
                     <td className="p-2 border text-center">{item.quantity}</td>
-                    <td className="p-2 border text-center">{unitPrice} dt</td>
                     <td className="p-2 border text-center">{totalPrice} dt</td>
                   </tr>
                 );
