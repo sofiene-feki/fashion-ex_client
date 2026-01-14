@@ -13,7 +13,7 @@ import {
 import { getStorySlides } from "../../functions/storySlide";
 import { NextArrow, PrevArrow } from "../ui";
 
-    const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
+const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
 
 export default function Story() {
   const { userInfo } = useSelector((s) => s.user);
@@ -99,100 +99,106 @@ export default function Story() {
   return (
     <div className="bg-white py-10">
       <div className="mx-auto md:mx-30 py-6 md:py-16 bg-white">
-       <div className="text-center mb-4">
-      <h2 className="
+        <div className="text-center mb-4">
+          <h2
+            className="
         font-heading
         text-lg md:text-3xl
         tracking-[0.22em]
         uppercase
         text-neutral-900
         mb-3
-      ">
-Artisanat Bargaoui Services      </h2>
+      "
+          >
+            Clin d’Oeil Store Services{" "}
+          </h2>
 
-      <p className="
+          <p
+            className="
         font-editorial
         text-sm md:text-base
         text-neutral-600
         leading-relaxed
         px-8
         text-center
-      ">
-Louis Vuitton offers  services including Client Advisor support, signature gift wrapping, and exclusive personalization options.      </p>
-    </div>
-
-      <Slider {...(isMobile ? mobileSettings : desktopSettings)}>
-        {slides.map((s, i) => (
-          <div
-            key={s._id}
-            className="px-2 relative cursor-pointer "
-            onClick={() => {
-              setStartIndex(i);
-              setFullscreen(true);
-            }}
+      "
           >
-            <video
-              ref={(el) => (videoRefs.current[i] = el)}
-              data-index={i}
-              src={s.videoUrl}
-              muted={muted}
-              playsInline
-              preload="metadata"
-              loop
-              className="h-[350px] w-full object-cover border border-[#f99e9a]/10
+            Clin d’Oeil Store offers services including Client Advisor support,
+            signature gift wrapping, and exclusive personalization options.{" "}
+          </p>
+        </div>
+
+        <Slider {...(isMobile ? mobileSettings : desktopSettings)}>
+          {slides.map((s, i) => (
+            <div
+              key={s._id}
+              className="px-2 relative cursor-pointer "
+              onClick={() => {
+                setStartIndex(i);
+                setFullscreen(true);
+              }}
+            >
+              <video
+                ref={(el) => (videoRefs.current[i] = el)}
+                data-index={i}
+                src={s.videoUrl}
+                muted={muted}
+                playsInline
+                preload="metadata"
+                loop
+                className="h-[350px] w-full object-cover border border-[#f99e9a]/10
 shadow-[0_12px_40px_rgba(249,158,154,0.18)]
 transition-all duration-500 ease-out
 group-hover:shadow-[0_20px_60px_rgba(249,158,154,0.22)]
  transition"
-            />
+              />
 
-            {/* RIGHT CONTROLS */}
-            <div className="absolute right-3 top-3 flex flex-col gap-2 z-20">
-              {/* PLAY / PAUSE */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const video = videoRefs.current[i];
-                  if (!video) return;
+              {/* RIGHT CONTROLS */}
+              <div className="absolute right-3 top-3 flex flex-col gap-2 z-20">
+                {/* PLAY / PAUSE */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const video = videoRefs.current[i];
+                    if (!video) return;
 
-                  if (video.paused) {
-                    setActiveVideo(i);
-                    video.play();
-                  } else {
-                    video.pause();
-                  }
-                }}
-                className="bg-black/50 p-2 rounded-full text-white"
-              >
-                {activeVideo === i && !videoRefs.current[i]?.paused ? (
-                  <PauseIcon className="w-4 h-4" />
-                ) : (
-                  <PlayIcon className="w-4 h-4" />
-                )}
-              </button>
+                    if (video.paused) {
+                      setActiveVideo(i);
+                      video.play();
+                    } else {
+                      video.pause();
+                    }
+                  }}
+                  className="bg-black/50 p-2 rounded-full text-white"
+                >
+                  {activeVideo === i && !videoRefs.current[i]?.paused ? (
+                    <PauseIcon className="w-4 h-4" />
+                  ) : (
+                    <PlayIcon className="w-4 h-4" />
+                  )}
+                </button>
 
-              {/* MUTE */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setMuted((m) => !m);
-                }}
-                className="bg-black/50 p-2 rounded-full text-white"
-              >
-                {muted ? (
-                  <SpeakerXMarkIcon className="w-4 h-4" />
-                ) : (
-                  <SpeakerWaveIcon className="w-4 h-4" />
-                )}
-              </button>
+                {/* MUTE */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setMuted((m) => !m);
+                  }}
+                  className="bg-black/50 p-2 rounded-full text-white"
+                >
+                  {muted ? (
+                    <SpeakerXMarkIcon className="w-4 h-4" />
+                  ) : (
+                    <SpeakerWaveIcon className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+
+              <p className="text-center mt-2">{s.title}</p>
             </div>
-
-            <p className="text-center mt-2">{s.title}</p>
-          </div>
-        ))}
-      </Slider>
+          ))}
+        </Slider>
       </div>
-    
 
       {fullscreen && (
         <FullscreenReels
@@ -228,9 +234,7 @@ function FullscreenReels({ slides, startIndex, onClose }) {
       { threshold: 0.7 }
     );
 
-    [...containerRef.current.children].forEach((n) =>
-      observer.observe(n)
-    );
+    [...containerRef.current.children].forEach((n) => observer.observe(n));
 
     return () => observer.disconnect();
   }, []);
@@ -276,9 +280,7 @@ function FullscreenReels({ slides, startIndex, onClose }) {
             />
 
             <button
-              onClick={() =>
-                setUnmutedId(unmutedId === s._id ? null : s._id)
-              }
+              onClick={() => setUnmutedId(unmutedId === s._id ? null : s._id)}
               className="absolute right-4 bottom-24 bg-black/50 p-3 rounded-full text-white"
             >
               {unmutedId === s._id ? (

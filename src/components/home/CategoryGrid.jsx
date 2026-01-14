@@ -46,20 +46,21 @@ function CategoryCard({ cat }) {
     triggerOnce: true,
   });
 
-    const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
-
+  const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
 
   return (
     <Link ref={ref} to={cat.link} className="block">
       {/* IMAGE CONTAINER */}
-      <div className="
+      <div
+        className="
         relative w-full
-        h-[340px] md:h-[420px]
+        h-[380px] md:h-[420px]
         overflow-hidden
         bg-black-100
         border border-[#f99e9a]/10
         shadow-[0_10px_30px_rgba(249,158,154,0.18)]
-      ">
+      "
+      >
         {/* IMAGE */}
         <img
           src={`${API_BASE_URL_MEDIA}${cat.image}`}
@@ -79,7 +80,9 @@ function CategoryCard({ cat }) {
               font-heading text-3xl 
               text-center bg-clip-text drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] 
               transition-all duration-700 ease-out uppercase
-              ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
+              ${
+                inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              }
             `}
           >
             {cat.title}

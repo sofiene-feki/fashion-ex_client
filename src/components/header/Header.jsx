@@ -10,6 +10,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import logo from "../../assets/bragaoui.png";
 import logoBlack from "../../assets/bragaouiBlack.jpg";
+import user from "../../assets/user.PNG";
 import { openCart } from "../../redux/ui/cartDrawer";
 import CustomDialog from "../ui/Dialog";
 import Search from "./Search";
@@ -119,7 +120,7 @@ export default function Header() {
                     <img
                       className={`w-6.5 h-6.5 rounded-full transition-colorstext-black ring-1 ring-black
                         `}
-                      // src={userImg}
+                      src={user}
                       alt="profile"
                       onClick={() => setUserMenuOpen(true)}
                     />
