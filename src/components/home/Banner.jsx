@@ -9,10 +9,12 @@ import CustomModal from "../ui/Modal";
 import { Input } from "../ui";
 import { createBanner, getBanners, removeBanner } from "../../functions/banner";
 import ProductMediaGallery from "../product/ProductMediaGallery";
+import { toast } from "react-toastify";
 
 export default function Banner() {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [fetching, setFetching] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [slides, setSlides] = useState([]);
   const [newSlide, setNewSlide] = useState({
     title: "",
@@ -53,7 +55,7 @@ export default function Banner() {
 
   const fetchSlides = async () => {
     try {
-      setLoading(true);
+      setFetching(true);
       const { data } = await getBanners();
 
       const normalizedSlides = normalizeBannerSrc(data).map((banner) => ({
@@ -68,7 +70,7 @@ export default function Banner() {
     } catch (err) {
       console.error("❌ Error fetching banners:", err);
     } finally {
-      setLoading(false);
+      setFetching(false);
     }
   };
 
@@ -79,46 +81,81 @@ export default function Banner() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!newSlide.title.trim()) return toast.warning("⚠️ Title is required");
+
+    const formData = new FormData();
+    formData.append("title", newSlide.title);
+    formData.append("link", newSlide.link);
+    formData.append("button", newSlide.button);
+    if (newSlide.file) formData.append("file", newSlide.file);
+
     try {
-      const formData = new FormData();
-      formData.append("title", newSlide.title);
-      formData.append("link", newSlide.link);
-      formData.append("button", newSlide.button);
-      if (newSlide.file) formData.append("file", newSlide.file);
+      setLoading(true);
 
-      const { data } = await createBanner(formData);
+      await toast
+        .promise(createBanner(formData), {
+          pending: `⏳ Saving slide "${newSlide.title}"...`,
+          success: `✅ Slide "${newSlide.title}" saved!`,
+          error: {
+            render({ data }) {
+              const msg =
+                data?.response?.data?.message ||
+                data?.message ||
+                "❌ Failed to save slide";
+              return msg;
+            },
+          },
+        })
+        .then(({ data }) => {
+          // Add new slide to UI
+          setSlides((prev) => [
+            ...prev,
+            {
+              title: data.title,
+              img: API_BASE_URL_MEDIA + data.img,
+              button: data.button,
+              link: data.link,
+            },
+          ]);
 
-      setSlides((prev) => [
-        ...prev,
-        {
-          title: data.title,
-          img: API_BASE_URL_MEDIA + data.img,
-          button: newSlide.button,
-          link: data.link,
-        },
-      ]);
-
-      setNewSlide({
-        title: "",
-        img: "",
-        button: "",
-        link: "",
-        preview: "",
-        file: null,
-      });
+          // Reset form
+          setNewSlide({
+            title: "",
+            img: "",
+            button: "",
+            link: "",
+            preview: "",
+            file: null,
+          });
+        });
     } catch (err) {
       console.error("❌ Error creating banner:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Supprimer cette catégorie ?")) return;
+  const handleDelete = async (id, title) => {
+    if (!window.confirm("Supprimer ce slide ?")) return;
 
     try {
-      await removeBanner(id);
-      await fetchSlides(); // 🔥 refresh after delete
+      setLoading(true);
+
+      await toast.promise(removeBanner(id), {
+        pending: `⏳ Deleting slide "${title}"...`,
+        success: `✅ Slide "${title}" deleted!`,
+        error: {
+          render({ data }) {
+            return data?.response?.data?.message || "❌ Failed to delete slide";
+          },
+        },
+      });
+
+      await fetchSlides(); // refresh slides after delete
     } catch (err) {
       console.error("❌ Error deleting banner:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -140,7 +177,7 @@ export default function Banner() {
     <div className="h-full mx-auto md:mx-30 bg-transparent">
       <div className="relative w-full">
         <Slider {...settings}>
-          {loading
+          {fetching
             ? Array.from({ length: 2 }).map((_, idx) => (
                 <SkeletonSlide key={idx} />
               ))
@@ -335,9 +372,8 @@ font-heading text-center
                   <div className="p-2 flex justify-between">
                     <div>
                       <p className="font-bold">{slide.title}</p>
-                      <p className="text-xs">
-                        {slide.button} → {slide.link}
-                      </p>
+                      <p className="text-xs">{slide.button}</p>
+                      <p className="text-xs">→ {slide.link}</p>
                     </div>
                     <div className="rounded-full">
                       <button

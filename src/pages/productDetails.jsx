@@ -28,13 +28,30 @@ import { useFacebookPixel } from "../hooks/useFacebookPixel";
 import { sendServerEvent } from "../functions/fbCapi";
 import { BsCartPlus } from "react-icons/bs";
 import { BsCartCheck } from "react-icons/bs";
+import { toast } from "react-toastify";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-    const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
-
+const API_BASE_URL_MEDIA = "http://localhost:8000";
+const Spinner = () => (
+  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+    <circle
+      className="opacity-25"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      strokeWidth="4"
+    />
+    <path
+      className="opacity-75"
+      fill="currentColor"
+      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+    />
+  </svg>
+);
 export default function ProductDetails() {
   const { slug } = useParams(); // 👈 make sure your route param is `:slug`
   const dispatch = useDispatch();
@@ -66,6 +83,7 @@ export default function ProductDetails() {
 
   const [product, setProduct] = useState(isCreate ? emptyProduct : null);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     if (product?._id) {
@@ -194,7 +212,7 @@ export default function ProductDetails() {
     });
   };
 
-   const handleBuyNow = () => {
+  const handleBuyNow = () => {
     const finalPrice = promotion > 0 ? discountedPrice : originalPrice;
 
     // ✅ Update Redux cart
@@ -211,10 +229,10 @@ export default function ProductDetails() {
         sizes: product.sizes,
       })
     );
-navigate('/checkout'); // Redirect to cart page
+    navigate("/checkout"); // Redirect to cart page
 
     // ✅ Client-side FB tracking
-   // trackAddToCart(product, finalPrice);
+    // trackAddToCart(product, finalPrice);
 
     // ✅ Server-side CAPI tracking
     // sendServerEvent({
@@ -268,6 +286,8 @@ navigate('/checkout'); // Redirect to cart page
   };
 
   const handleSubmit = async () => {
+    setActionLoading(true);
+
     const formData = new FormData();
 
     formData.append("Title", product.Title);
@@ -315,13 +335,28 @@ navigate('/checkout'); // Redirect to cart page
     // -------------------------
     // Send
     // -------------------------
-    await productCreate(formData);
+    await toast.promise(productCreate(formData), {
+      pending: `⏳ Création de "${product.Title}"...`,
+      success: `✅ "${product.Title}" créé avec succès`,
+      error: {
+        render({ data }) {
+          return (
+            data?.response?.data?.error ||
+            data?.message ||
+            `❌ Échec de la création de "${product.Title}"`
+          );
+        },
+      },
+    });
+    setActionLoading(false);
     console.log("📦 Create payload:", [...formData.entries()]);
     navigate("/shop");
   };
 
   const handleUpdate = async () => {
     try {
+      setActionLoading(true);
+
       const formData = new FormData();
 
       // -------------------------
@@ -339,11 +374,9 @@ navigate('/checkout'); // Redirect to cart page
 
       // -------------------------
       // Colors handling
-      // -------------------------
       if (Array.isArray(product.colors)) {
-        // Prepare color payload without files
         const colorsPayload = product.colors.map((c) => ({
-        
+          _id: c._id, // ✅ KEEP ID
           name: c.name,
           value: c.value,
           type: c.type || "image",
@@ -352,25 +385,16 @@ navigate('/checkout'); // Redirect to cart page
 
         formData.append("colors", JSON.stringify(colorsPayload));
 
-        // Append color files (only new uploads)
-        product.colors.forEach((c) => {
+        // ✅ index-based files (IMPORTANT)
+        product.colors.forEach((c, i) => {
           if (c.file) {
-            formData.append("colorFiles", c.file);
+            formData.append(`colorFiles[${i}]`, c.file);
           }
         });
       }
-
-      // -------------------------
-      // Sizes handling
-      // -------------------------
       if (Array.isArray(product.sizes)) {
-        product.sizes.forEach((s, i) => {
-          if (s.name) formData.append(`sizes[${i}][name]`, s.name);
-          if (s.price !== undefined)
-            formData.append(`sizes[${i}][price]`, Number(s.price));
-        });
+        formData.append("sizes", JSON.stringify(product.sizes));
       }
-
       // -------------------------
       // Media handling
       // -------------------------
@@ -406,15 +430,27 @@ navigate('/checkout'); // Redirect to cart page
       // -------------------------
       // Send to server
       // -------------------------
-      const res = await updateProduct(slug, formData);
-      console.log("✅ Product updated:", res.data);
-
+      await toast.promise(updateProduct(slug, formData), {
+        pending: `⏳ Mise à jour de "${product.Title}"...`,
+        success: `✅ "${product.Title}" mis à jour avec succès`,
+        error: {
+          render({ data }) {
+            return (
+              data?.response?.data?.error ||
+              data?.message ||
+              `❌ Échec de la mise à jour de "${product.Title}"`
+            );
+          },
+        },
+      });
       setCurrentMode("view");
     } catch (err) {
       console.error(
         "❌ Error updating product:",
         err.response?.data || err.message
       );
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -423,17 +459,30 @@ navigate('/checkout'); // Redirect to cart page
       return;
 
     try {
-      await removeProduct(slug);
+      setActionLoading(true);
 
+      await toast.promise(removeProduct(slug), {
+        pending: `⏳ Suppression de "${product.Title}"...`,
+        success: `🗑️ "${product.Title}" supprimé avec succès`,
+        error: {
+          render({ data }) {
+            return (
+              data?.response?.data?.error ||
+              data?.message ||
+              `❌ Échec de la suppression de "${product.Title}"`
+            );
+          },
+        },
+      });
       // update UI by filtering out deleted product
       //  setProducts((prev) => prev.filter((p) => p.slug !== slug));
-
-      alert("✅ Product deleted successfully");
     } catch (error) {
       console.error("❌ Failed to delete product:", error);
       alert("Failed to delete product");
+    } finally {
+      setActionLoading(false);
+      navigate("/shop"); // redirect to shop page
     }
-    navigate("/shop"); // redirect to shop page
   };
 
   const formatPrice = (price) => {
@@ -486,12 +535,22 @@ navigate('/checkout'); // Redirect to cart page
                       handleUpdate(); // 👉 update product
                     }
                   }}
-                  className="flex md:text-base text-xs items-center md:gap-2 gap-1 md:px-4 px-2 md:py-2 py-1 bg-green-50 text-green-600  
-             focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-green-400 
-             rounded-xl shadow-sm hover:bg-green-100 transition"
+                  className={`flex md:text-base text-xs items-center md:gap-2 gap-1 md:px-4 px-2 md:py-2 py-1 rounded-xl shadow-sm transition
+    ${
+      actionLoading
+        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+        : "bg-green-50 text-green-600 hover:bg-green-100 focus:ring-2 focus:ring-green-400"
+    }
+  `}
                 >
-                  <HiOutlineCheck className="h-5 w-5" />
-                  <span>Enregistrer</span>
+                  {actionLoading ? (
+                    <Spinner />
+                  ) : (
+                    <HiOutlineCheck className="h-5 w-5" />
+                  )}
+                  <span>
+                    {actionLoading ? "Enregistrement..." : "Enregistrer"}
+                  </span>
                 </button>
               </>
             ) : (
@@ -523,23 +582,18 @@ navigate('/checkout'); // Redirect to cart page
         {loading ? (
           <div className=" w-full h-[400px] lg:w-1/2 md:mb-6  lg:mb-0 bg-gray-200 rounded-lg animate-pulse"></div>
         ) : (
-         <div
-  className={`w-full lg:w-1/2 ${
-    isCreate ? "p-3 mt-2" : ""
-  }`}
->
-  <ProductMediaGallery
-    media={product?.media}
-    selectedMedia={selectedMedia}
-    onSelectMedia={setSelectedMedia}
-    onAddMedia={handleFileUpload}
-    onDeleteMedia={deleteMedia}
-    isEditable={isEdit || isCreate}
-    setSelectedMedia={setSelectedMedia}
-    galleryClassName="flex flex-col items-center justify-center w-full h-80 md:w-1/1 md:h-96 bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl text-gray-400 text-center cursor-pointer hover:bg-gray-200 transition"
-  />
-</div>
-
+          <div className={`w-full lg:w-1/2 ${isCreate ? "p-3 mt-2" : ""}`}>
+            <ProductMediaGallery
+              media={product?.media}
+              selectedMedia={selectedMedia}
+              onSelectMedia={setSelectedMedia}
+              onAddMedia={handleFileUpload}
+              onDeleteMedia={deleteMedia}
+              isEditable={isEdit || isCreate}
+              setSelectedMedia={setSelectedMedia}
+              galleryClassName="flex flex-col items-center justify-center w-full h-80 md:w-1/1 md:h-96 bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl text-gray-400 text-center cursor-pointer hover:bg-gray-200 transition"
+            />
+          </div>
         )}
 
         {/* RIGHT: Product Info */}
@@ -554,8 +608,10 @@ navigate('/checkout'); // Redirect to cart page
               {loading ? (
                 <div className="h-8 mb-2 w-3/4 bg-gray-200 rounded-lg animate-pulse"></div>
               ) : (
-                <h1 className="text-2xl mt-8        font-heading
- bg-clip-text drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)] font-bold text-gray-900 sm:text-xl sm:mb-2">
+                <h1
+                  className="text-2xl mt-8        font-heading
+ bg-clip-text drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)] font-bold text-gray-900 sm:text-xl sm:mb-2"
+                >
                   {product.Title}
                 </h1>
               )}
@@ -565,42 +621,49 @@ navigate('/checkout'); // Redirect to cart page
               ) : (
                 <div className="md:text-3xl text-xl flex border-b border-gray-200 justify-between font-bold break-words bg-clip-text drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)] text-gray-900 py-2 mb-3">
                   <div className="flex items-baseline gap-2 mt-1">
-  {promotion > 0 ? (
-    <>
-      <span className="font-body text-xs line-through text-neutral-400">
-        {formatPrice(originalPrice)}
-      </span>
+                    {promotion > 0 ? (
+                      <>
+                        <span className="font-body text-xs line-through text-neutral-400">
+                          {formatPrice(originalPrice)}
+                        </span>
 
-      <span className="
+                        <span
+                          className="
         font-heading
         text-sm
         tracking-[0.12em]
         text-gray-800
-      ">
-        {formatPrice(discountedPrice)}
-      </span>
-    </>
-  ) : (
-    <span className="
+      "
+                        >
+                          {formatPrice(discountedPrice)}
+                        </span>
+                      </>
+                    ) : (
+                      <span
+                        className="
       font-heading
       text-sm
       tracking-[0.12em]
       text-neutral-900
-    ">
-      {formatPrice(originalPrice)}
-    </span>
-  )}
-</div>
+    "
+                      >
+                        {formatPrice(originalPrice)}
+                      </span>
+                    )}
+                  </div>
                   <span className="flex items-center gap-2 mt-2">
-                   
                     {product.Quantity > 0 ? (
-                      <span className="      font-heading
- text-green-600 text-xs font-semibold">
+                      <span
+                        className="      font-heading
+ text-green-600 text-xs font-semibold"
+                      >
                         En stock
                       </span>
                     ) : (
-                      <span className="      font-heading
- text-red-500 text-xs line-through">
+                      <span
+                        className="      font-heading
+ text-red-500 text-xs line-through"
+                      >
                         Rupture de stock
                       </span>
                     )}
@@ -706,7 +769,9 @@ navigate('/checkout'); // Redirect to cart page
           {/* Description */}
           {!(isEdit || isCreate) && (
             <div className="">
-              <h3 className="font-heading font-semibold mt-3 ">Description :</h3>
+              <h3 className="font-heading font-semibold mt-3 ">
+                Description :
+              </h3>
               {loading ? (
                 <div className="h-16 md:h-24 mb-2 w-full bg-gray-200 rounded-lg animate-pulse"></div>
               ) : (
@@ -730,17 +795,16 @@ navigate('/checkout'); // Redirect to cart page
        hover:shadow-lg active:scale-95 transition"
               >
                 <BsCartPlus className="h-6 w-6  animate-pulse" />
-                                Ajouter au panier
-
+                Ajouter au panier
               </button>
-                <button
+              <button
                 onClick={handleBuyNow}
                 className="w-full  border  border-gray-400 text-white bg-gray-900 flex items-center justify-center gap-3  
        px-6 py-3 font-heading  font-semibold shadow-md 
        hover:shadow-lg active:scale-95 transition"
               >
                 <BsCartCheck className="h-6 w-6  animate-pulse" />
-                 Acheter Maintenant 
+                Acheter Maintenant
               </button>
             </div>
           )}

@@ -193,11 +193,11 @@ export default function CustomToolbar({
         <div className="gap-2">
           <button
             onClick={handleModalOpen} // <-- open modal
-            className={`items-center gap-1 px-2  md:px-2 py-2 bg-blue-50 border border-blue-700 hover:bg-blue-100 text-blue-700 rounded-xl shadow-sm text-xs md:text-xs transition
+            className={`items-center gap-1 px-2  md:px-2 py-2 bg-white border border-blue-400 hover:bg-blue-100 text-blue-700 rounded-xl shadow-sm text-xs md:text-xs transition
             ${searchExpanded ? "hidden sm:inline-flex" : "inline-flex"}`}
           >
             <PlusIcon className="w-4 h-4 " />
-            Crée 
+            Crée
           </button>
           <button
             disabled={loadingSelectedRows}
@@ -206,7 +206,7 @@ export default function CustomToolbar({
     ${
       loadingSelectedRows
         ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-        : "bg-blue-50 text-blue-700 border border-blue-700 hover:bg-blue-100"
+        : "bg-white text-blue-700 border border-blue-400 hover:bg-blue-100"
     }
     ${searchExpanded ? "hidden sm:inline-flex" : "inline-flex"}
   `}

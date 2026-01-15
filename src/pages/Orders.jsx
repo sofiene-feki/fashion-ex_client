@@ -222,7 +222,7 @@ const Order = () => {
       const selectedRowsArray = Array.from(selectedRowsMap.values());
 
       if (!selectedRowsArray || selectedRowsArray.length === 0) {
-        toast.warning("⚠️ No rows selected");
+        toast.warning("No rows selected");
         return;
       }
 
