@@ -8,7 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import logoBlack from "../../assets/bragaouiBlack.PNG";
+import logoBlack from "../../assets/bragaouiBlack.png";
 import user from "../../assets/user.PNG";
 import { openCart } from "../../redux/ui/cartDrawer";
 import CustomDialog from "../ui/Dialog";
