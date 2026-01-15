@@ -336,20 +336,20 @@ export default function ProductDetails() {
     // Send
     // -------------------------
     await toast.promise(productCreate(formData), {
-      pending: `⏳ Création de "${product.Title}"...`,
-      success: `✅ "${product.Title}" créé avec succès`,
+      pending: `Création de "${product.Title}"...`,
+      success: `"${product.Title}" créé avec succès`,
       error: {
         render({ data }) {
           return (
             data?.response?.data?.error ||
             data?.message ||
-            `❌ Échec de la création de "${product.Title}"`
+            `Échec de la création de "${product.Title}"`
           );
         },
       },
     });
     setActionLoading(false);
-    console.log("📦 Create payload:", [...formData.entries()]);
+    //  console.log("📦 Create payload:", [...formData.entries()]);
     navigate("/shop");
   };
 

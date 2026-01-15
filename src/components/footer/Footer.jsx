@@ -2,14 +2,13 @@ import React from "react";
 import instagram from "../ui/instagram.svg";
 import facebook from "../ui/facebook.svg";
 import tiktok from "../ui/tiktok.svg";
-import { FaFacebook, FaInstagram, FaTiktok  } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaTiktok } from "react-icons/fa";
 
 export default function Footer() {
   return (
     <footer className="bg-gray-100 md:py-16 pt-6 print:hidden">
       <div className="max-w-screen-xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-
           {/* ===== Company Info ===== */}
           <div>
             <h4 className="text-lg md:text-xl font-heading mb-5 tracking-[0.18em] uppercase ">
@@ -17,7 +16,8 @@ export default function Footer() {
             </h4>
             <div className="font-body text-sm md:text-base /80 space-y-3 leading-relaxed">
               <p>
-                <strong>Address:</strong> 23 Bis avenue de la liberté Manzah5 2037 Tunis
+                <strong>Address:</strong> 23 Bis avenue de la liberté Manzah5
+                2037 Tunis
               </p>
               <p>
                 <strong>Phone:</strong>{" "}
@@ -40,21 +40,21 @@ export default function Footer() {
             </div>
 
             {/* Socials */}
-             <div className="flex space-x-5 mt-4">
+            <div className="flex space-x-5 mt-4">
               {[
                 {
-                  href: "https://www.facebook.com/ArtisanatBargaoui",
+                  href: "https://www.facebook.com/clindoeilstore",
                   label: "Facebook",
                   svg: <FaFacebook className="w-6 h-6" />,
                 },
                 {
                   href: "https://Youtube.com",
                   label: "Youtube",
-                  svg: <FaTiktok  className="w-6 h-6" />,
+                  svg: <FaTiktok className="w-6 h-6" />,
                 },
 
                 {
-                  href: "https://instagram.com",
+                  href: "https://www.instagram.com/clin_doeil_store",
                   label: "Instagram",
                   svg: <FaInstagram className="w-6 h-6" />,
                 },
@@ -65,7 +65,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="text-gray-600 hover:text-[#87a736] transition transform hover:scale-110"
+                  className="text-gray-600 hover:text-gray-900 transition transform hover:scale-110"
                 >
                   {svg}
                 </a>
@@ -143,11 +143,7 @@ src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3192.7386660123134!2d
 function Social({ icon, label }) {
   return (
     <div className="flex flex-col items-center transition-transform hover:scale-110">
-      <img
-        src={icon}
-        alt={label}
-        className="w-7 h-7 drop-shadow-lg"
-      />
+      <img src={icon} alt={label} className="w-7 h-7 drop-shadow-lg" />
       <span className=" text-[10px] mt-1 font-editorial">{label}</span>
     </div>
   );

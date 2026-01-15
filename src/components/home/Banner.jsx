@@ -94,14 +94,14 @@ export default function Banner() {
 
       await toast
         .promise(createBanner(formData), {
-          pending: `⏳ Saving slide "${newSlide.title}"...`,
-          success: `✅ Slide "${newSlide.title}" saved!`,
+          pending: `Saving slide "${newSlide.title}"...`,
+          success: `Slide "${newSlide.title}" saved!`,
           error: {
             render({ data }) {
               const msg =
                 data?.response?.data?.message ||
                 data?.message ||
-                "❌ Failed to save slide";
+                "Failed to save slide";
               return msg;
             },
           },
