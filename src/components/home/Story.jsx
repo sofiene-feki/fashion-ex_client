@@ -12,6 +12,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { getStorySlides } from "../../functions/storySlide";
 import { NextArrow, PrevArrow } from "../ui";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 
 const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
 
@@ -213,92 +214,130 @@ group-hover:shadow-[0_20px_60px_rgba(249,158,154,0.22)]
 
 /* ================= FULLSCREEN (UNCHANGED LOGIC, CLEAN) ================= */
 function FullscreenReels({ slides, startIndex, onClose }) {
-  const containerRef = useRef(null);
-  const videoRefs = useRef([]);
-  const [active, setActive] = useState(startIndex);
-  const [unmutedId, setUnmutedId] = useState(null);
+  const videoRef = useRef(null);
+  const [index, setIndex] = useState(startIndex);
+  const [muted, setMuted] = useState(true);
 
+  const current = slides[index];
+  const isMobile = window.innerWidth < 768;
+
+  /* ================= PLAY ================= */
   useEffect(() => {
-    containerRef.current?.children[startIndex]?.scrollIntoView();
-  }, [startIndex]);
+    if (!videoRef.current) return;
+    videoRef.current.currentTime = 0;
+    videoRef.current.play().catch(() => {});
+  }, [index]);
 
+  /* ================= KEYBOARD (DESKTOP) ================= */
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            setActive(Number(e.target.dataset.index));
-          }
-        });
-      },
-      { threshold: 0.7 }
-    );
+    if (isMobile) return;
 
-    [...containerRef.current.children].forEach((n) => observer.observe(n));
+    const onKey = (e) => {
+      if (e.key === "ArrowDown") next();
+      if (e.key === "ArrowUp") prev();
+      if (e.key === "Escape") onClose();
+    };
 
-    return () => observer.disconnect();
-  }, []);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [index, isMobile]);
 
-  useEffect(() => {
-    videoRefs.current.forEach((video, i) => {
-      if (!video) return;
-      if (i === active) {
-        video.play().catch(() => {});
-      } else {
-        video.pause();
-        video.currentTime = 0;
-      }
-    });
-  }, [active]);
+  const next = () => {
+    setIndex((i) => Math.min(i + 1, slides.length - 1));
+  };
+
+  const prev = () => {
+    setIndex((i) => Math.max(i - 1, 0));
+  };
+
+  if (!current) return null;
 
   return (
-    <div className="fixed inset-0 bg-black z-50">
+    <div className="fixed inset-0 z-100 p-0  md:pt-20 md:pb-6 bg-black flex items-center justify-center">
+      {/* CLOSE */}
       <button
         onClick={onClose}
-        className="absolute top-20 right-4 text-white z-50"
+        className="absolute top-20   right-4 text-white z-50"
       >
-        <XMarkIcon className="w-8 h-8" />
+        <XMarkIcon className="w-7 h-7" />
       </button>
 
+      {/* VIDEO WRAPPER */}
       <div
-        ref={containerRef}
-        className="h-full overflow-y-scroll snap-y snap-mandatory"
+        className={`
+      relative h-full w-full
+      ${isMobile ? "" : "max-w-[450px]"}
+      flex items-center justify-center
+    `}
       >
-        {slides.map((s, i) => (
-          <div
-            key={s._id}
-            data-index={i}
-            className="h-screen snap-start relative"
-          >
-            <video
-              ref={(el) => (videoRefs.current[i] = el)}
-              src={s.videoUrl}
-              muted={unmutedId !== s._id}
-              playsInline
-              loop
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+        {/* VIDEO */}
+        <video
+          key={current._id}
+          ref={videoRef}
+          src={current.videoUrl}
+          muted={muted}
+          playsInline
+          loop
+          className={`
+        w-full h-full bg-black
+        ${isMobile ? "object-cover" : "object-cover rounded-2xl"}
+      `}
+          onClick={() => setMuted((m) => !m)}
+        />
 
-            <button
-              onClick={() => setUnmutedId(unmutedId === s._id ? null : s._id)}
-              className="absolute right-4 bottom-24 bg-black/50 p-3 rounded-full text-white"
-            >
-              {unmutedId === s._id ? (
-                <SpeakerWaveIcon className="w-6" />
-              ) : (
-                <SpeakerXMarkIcon className="w-6" />
-              )}
-            </button>
-
-            <div className="absolute bottom-10 left-4 text-white z-20">
-              <h2 className="text-xl font-bold">{s.title}</h2>
-              <p className="opacity-80">{s.description}</p>
-            </div>
-
-            <div className="absolute inset-0 bg-black/30" />
+        {/* BOTTOM BAR */}
+        <div
+          className={`
+        absolute w-full bottom-0
+        flex item-center justify-between 
+        bg-black/10 
+        px-4 py-2 rounded-xl
+      `}
+        >
+          {/* TEXT */}
+          <div className="text-white">
+            <h2 className="text-base md:text-lg mt-2 font-semibold leading-tight">
+              {current.title}
+            </h2>
+            <p className="text-xs md:text-sm opacity-80">
+              {current.description}
+            </p>
           </div>
-        ))}
+
+          {/* MUTE */}
+          <button
+            onClick={() => setMuted((m) => !m)}
+            className="shrink-0 bg-black/60 p-2 rounded-full text-white"
+          >
+            {muted ? (
+              <SpeakerXMarkIcon className="w-5 h-5" />
+            ) : (
+              <SpeakerWaveIcon className="w-5 h-5" />
+            )}
+          </button>
+        </div>
       </div>
+
+      {/* DESKTOP ARROWS */}
+      {!isMobile && (
+        <div className="absolute right-6 flex flex-col gap-3 z-30">
+          <button
+            onClick={prev}
+            disabled={index === 0}
+            className="bg-white/10 hover:bg-white/20 p-3 rounded-full text-white disabled:opacity-30"
+          >
+            <ChevronUpIcon className="w-6 h-6" />
+          </button>
+
+          <button
+            onClick={next}
+            disabled={index === slides.length - 1}
+            className="bg-white/10 hover:bg-white/20 p-3 rounded-full text-white disabled:opacity-30"
+          >
+            <ChevronDownIcon className="w-6 h-6" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import Slider from "react-slick";
 import { addItem } from "../../redux/cart/cartSlice";
 import { openCart } from "../../redux/ui/cartDrawer";
 
-  const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
+const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
 
 export default function Product({ product, loading }) {
   const dispatch = useDispatch();
@@ -40,7 +40,6 @@ export default function Product({ product, loading }) {
     fade: true,
     speed: 800,
     autoplaySpeed: 3500,
-   
   };
 
   const formatPrice = (price) => {
@@ -74,7 +73,7 @@ group-hover:shadow-[0_20px_60px_rgba(249,158,154,0.22)]
             </div>
 
             {/* Color images */}
-            {product.colors?.map((color, i) => (
+            {/* {product.colors?.map((color, i) => (
               <div key={i}>
                 <img
                   src={`${API_BASE_URL_MEDIA}${color.src}`}
@@ -82,11 +81,12 @@ group-hover:shadow-[0_20px_60px_rgba(249,158,154,0.22)]
                   className="w-full h-96 object-cover"
                 />
               </div>
-            ))}
+            ))} */}
           </Slider>
           {/* Promotion badge */}
-       {promotion > 0 && (
-  <span className="
+          {promotion > 0 && (
+            <span
+              className="
     absolute top-4 left-4
     px-3 py-1
     font-heading
@@ -96,11 +96,11 @@ group-hover:shadow-[0_20px_60px_rgba(249,158,154,0.22)]
     text-white
     bg-black
     border border-white/60
-  ">
-    −{promotion}%
-  </span>
-)}
-
+  "
+            >
+              −{promotion}%
+            </span>
+          )}
         </div>
 
         {/* CONTENT */}
@@ -130,34 +130,37 @@ group-hover:shadow-[0_20px_60px_rgba(249,158,154,0.22)]
           </div>
 
           {/* PRICE */}
-       <div className="flex items-baseline gap-2 mt-1">
-  {promotion > 0 ? (
-    <>
-      <span className="font-body text-xs line-through text-neutral-400">
-        {formatPrice(originalPrice)}
-      </span>
+          <div className="flex items-baseline gap-2 mt-1">
+            {promotion > 0 ? (
+              <>
+                <span className="font-body text-xs line-through text-neutral-400">
+                  {formatPrice(originalPrice)}
+                </span>
 
-      <span className="
+                <span
+                  className="
         font-heading
         text-sm
         tracking-[0.12em]
         text-gray-800
-      ">
-        {formatPrice(discountedPrice)}
-      </span>
-    </>
-  ) : (
-    <span className="
+      "
+                >
+                  {formatPrice(discountedPrice)}
+                </span>
+              </>
+            ) : (
+              <span
+                className="
       font-heading
       text-sm
       tracking-[0.12em]
       text-neutral-900
-    ">
-      {formatPrice(originalPrice)}
-    </span>
-  )}
-</div>
-
+    "
+              >
+                {formatPrice(originalPrice)}
+              </span>
+            )}
+          </div>
         </div>
       </Link>
     </div>

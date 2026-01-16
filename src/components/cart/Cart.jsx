@@ -18,6 +18,14 @@ import CustomDialog from "../ui/Dialog";
 import { useFacebookPixel } from "../../hooks/useFacebookPixel";
 import { sendServerEvent } from "../../functions/fbCapi";
 
+const formatPrice = (price) => {
+  return new Intl.NumberFormat("fr-TN", {
+    style: "currency",
+    currency: "TND",
+    minimumFractionDigits: 3,
+  }).format(price);
+};
+
 export default function CartDrawer() {
   const dispatch = useDispatch();
 
@@ -112,7 +120,7 @@ export default function CartDrawer() {
                               })
                             )
                           }
-                          className="w-8 h-8 flex-shrink-0 border border-gray-300 rounded text-gray-700 hover:bg-gray-200 flex items-center justify-center"
+                          className="w-8 h-8 flex-shrink-0 bg-white shadow-xl border border-gray-300 rounded text-gray-700 hover:bg-gray-200 flex items-center justify-center"
                           aria-label="Supprimer"
                         >
                           <TrashIcon className="w-4 h-4" />
@@ -120,7 +128,7 @@ export default function CartDrawer() {
                       </div>
 
                       {/* Options: Color & Size */}
-                      <div className="flex flex-wrap gap-1 md:gap-3 text-sm text-gray-700 mt-1">
+                      <div className="flex flex-col flex-wrap gap-1 md:gap-3 text-sm text-gray-700">
                         {Array.isArray(item.colors) &&
                           item.colors.length > 0 && (
                             <label className="flex items-center gap-1">
@@ -179,7 +187,7 @@ export default function CartDrawer() {
                           {item.products?.map((prod, index) => (
                             <div
                               key={index}
-                              className="flex flex-wrap items-center gap-2 text-sm md:text-base"
+                              className="flex flex-column flex-wrap items-center gap-2 text-sm md:text-base"
                             >
                               <span className="text-gray-500">
                                 {prod.name || "Unnamed Product"} :
@@ -208,7 +216,7 @@ export default function CartDrawer() {
                                 })
                               )
                             }
-                            className="px-2.5 py-1 border border-gray-300 rounded text-gray-700 hover:bg-gray-200"
+                            className="px-2.5 bg-white shadow-xl border border-gray-300 rounded text-gray-700 hover:bg-gray-200"
                           >
                             -
                           </button>
@@ -225,14 +233,14 @@ export default function CartDrawer() {
                                 })
                               )
                             }
-                            className="px-2 py-1 border border-gray-300 rounded text-gray-700 hover:bg-gray-200"
+                            className="px-2 bg-white shadow-xl border border-gray-300 rounded text-gray-700 hover:bg-gray-200"
                           >
                             +
                           </button>
                         </div>
 
                         <p className="text-base font-medium text-gray-900">
-                          {item.price} DT
+                          {formatPrice(item.price)}
                         </p>
                       </div>
                     </div>
@@ -247,7 +255,7 @@ export default function CartDrawer() {
         <div className="border-t bg-gray-100 border-gray-200 px-4 py-2 sm:px-6">
           <div className="flex justify-between text-base font-medium text-gray-900">
             <p>Total</p>
-            <p>{totalPrice} DT</p>
+            <p>{formatPrice(totalPrice)}</p>
           </div>
           <p className="mt-0.5 text-sm text-gray-500">
             Livraison et taxes calculées à la caisse.
@@ -269,8 +277,8 @@ export default function CartDrawer() {
               ou{" "}
               <button
                 type="button"
-                onClick={() => console.log(items)}
-                className=" text-[#87a736] hover:text-bg-[#87a736]"
+                onClick={() => dispatch(closeCart())}
+                className=" text-gray-700"
               >
                 Continuer vos achats
                 <span aria-hidden="true"> &rarr;</span>

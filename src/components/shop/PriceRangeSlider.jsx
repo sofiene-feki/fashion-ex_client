@@ -25,7 +25,7 @@ export default function PriceRangeSlider({ values, setValues }) {
               }}
             >
               <div
-                className="h-2 bg-indigo-600 rounded"
+                className="h-2 bg-[#d4af37] rounded"
                 style={{
                   position: "absolute",
                   left: `${((values[0] - MIN) / (MAX - MIN)) * 100}%`,
@@ -40,7 +40,7 @@ export default function PriceRangeSlider({ values, setValues }) {
           renderThumb={({ props }) => (
             <div
               {...props}
-              className="h-5 w-5 rounded-full bg-white border-2 border-indigo-600 shadow-md cursor-pointer"
+              className="h-5 w-5 rounded-full bg-white border-2 border-[#d4af37] shadow-md cursor-pointer"
             />
           )}
         />

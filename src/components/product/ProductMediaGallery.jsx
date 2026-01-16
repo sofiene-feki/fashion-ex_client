@@ -89,14 +89,13 @@ export default function ProductMediaGallery({
     appendDots: (dots) => {
       const total = dots.length;
       const current =
-        dots.findIndex(dot =>
-          dot.props.className?.includes("slick-active")
-        ) + 1;
+        dots.findIndex((dot) => dot.props.className?.includes("slick-active")) +
+        1;
 
       return (
-       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
-  <div
-    className="
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
+          <div
+            className="
       flex items-center gap-5
       px-6 py-2
       text-xs tracking-[0.3em]
@@ -104,32 +103,31 @@ export default function ProductMediaGallery({
       select-none
       justify-center
     "
-  >
-    {/* PREV */}
-    <button
-      onClick={() => sliderRef.current?.slickPrev()}
-      className="hover:opacity-60 transition"
-      aria-label="Previous slide"
-    >
-      <GoChevronLeft/>
-    </button>
+          >
+            {/* PREV */}
+            <button
+              onClick={() => sliderRef.current?.slickPrev()}
+              className="hover:opacity-60 transition"
+              aria-label="Previous slide"
+            >
+              <GoChevronLeft />
+            </button>
 
-    {/* COUNTER */}
-    <span>
-      {current} / {total}
-    </span>
+            {/* COUNTER */}
+            <span>
+              {current} / {total}
+            </span>
 
-    {/* NEXT */}
-    <button
-      onClick={() => sliderRef.current?.slickNext()}
-      className="hover:opacity-60 transition"
-      aria-label="Next slide"
-    >
-<GoChevronRight/>
-    </button>
-  </div>
-</div>
-
+            {/* NEXT */}
+            <button
+              onClick={() => sliderRef.current?.slickNext()}
+              className="hover:opacity-60 transition"
+              aria-label="Next slide"
+            >
+              <GoChevronRight />
+            </button>
+          </div>
+        </div>
       );
     },
 
@@ -152,7 +150,9 @@ export default function ProductMediaGallery({
               onClick={isSingle ? handleSingleClick : undefined}
               className={`relative aspect-square bg-black rounded-lg ${
                 !isSingle ? "hidden lg:block" : ""
-              } ${isSingle && isEditable ? "cursor-pointer hover:opacity-90" : ""}`}
+              } ${
+                isSingle && isEditable ? "cursor-pointer hover:opacity-90" : ""
+              }`}
             >
               {/* DELETE BUTTON (SINGLE MODE) */}
               {isSingle && isEditable && selectedMedia && (
@@ -253,7 +253,7 @@ export default function ProductMediaGallery({
 
               {isEditable && (
                 <button
-                  onClick={() => onDeleteMedia(item)}
+                  onClick={() => onDeleteMedia(idx)}
                   className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full"
                 >
                   <TrashIcon className="h-4 w-4" />

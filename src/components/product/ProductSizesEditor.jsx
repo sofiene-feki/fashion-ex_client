@@ -35,7 +35,7 @@ export default function ProductSizesEditor({
             type="text"
             value={s.name}
             onChange={(e) => handleChangeProduct(e, i, "name", "sizes")}
-            placeholder="Size (e.g., 80x190)"
+            placeholder="Size ( Ex: S, M, L )"
             className="border rounded p-2 w-full "
           />
           <Input

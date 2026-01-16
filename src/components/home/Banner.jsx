@@ -184,11 +184,14 @@ export default function Banner() {
             : slides.map((slide, index) => (
                 <div key={index} className="relative w-full overflow-hidden">
                   {/* IMAGE */}
-                  <div className="relative w-full h-[450px] overflow-hidden">
+                  <div
+                    className="relative w-full overflow-hidden
+                h-[420px] md:h-[500px]"
+                  >
                     <img
                       src={slide.img}
                       alt={slide.title}
-                      className="w-full h-full object-cover cinematic-zoom"
+                      className="w-full h-full object-cover object-center cinematic-zoom"
                     />
                     <div className="absolute inset-0 bg-black/20" />
                   </div>

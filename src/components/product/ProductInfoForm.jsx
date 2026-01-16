@@ -137,7 +137,7 @@ export default function ProductInfoForm({ product, setProduct }) {
       >
         <option value="">Select category</option>
         {categories.map((cat) => (
-          <option key={cat._id} value={cat.name}>
+          <option key={cat._id} value={cat.slug}>
             {cat.name}
           </option>
         ))}
