@@ -48,8 +48,8 @@ export default function Footer() {
                   svg: <FaFacebook className="w-6 h-6" />,
                 },
                 {
-                  href: "https://Youtube.com",
-                  label: "Youtube",
+                  href: "https://www.tiktok.com/@clindoeilstore?_r=1&_t=ZS-9392uXMciLw",
+                  label: "Tiktok",
                   svg: <FaTiktok className="w-6 h-6" />,
                 },
 

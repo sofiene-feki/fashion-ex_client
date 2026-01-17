@@ -21,9 +21,10 @@ export default function About() {
 
             <p className="mt-6 text-base md:text-lg leading-relaxed">
               <strong>Clin d’Oeil Store</strong> est une boutique de vêtements
-              et de mode basée en <strong>Tunisie</strong>, dédiée aux amateurs
-              de style moderne et élégant. Nous proposons une sélection soignée
-              de pièces tendance alliant confort, qualité et modernité.
+              et de mode basée en <strong>Tunisie El Manzah5</strong>, dédiée
+              aux amateurs de style moderne et élégant. Nous proposons une
+              sélection soignée de pièces tendance alliant confort, qualité et
+              modernité.
             </p>
 
             <p className="mt-4 text-base md:text-lg leading-relaxed">

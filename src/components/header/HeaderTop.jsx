@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { PauseIcon, PlayIcon } from "@heroicons/react/24/outline";
 
 const MESSAGES = [
-  "Free Shipping on All Orders",
-  "Complimentary Returns Within 14 Days",
+  "Livraison offerte dès 299 TND d’achat",
+  "Échange possible sous 14 jours",
 ];
 
 const DURATION = 4500; // loader duration
@@ -35,7 +35,6 @@ export default function TopLuxuryBanner() {
   return (
     <div className="w-full bg-black text-white text-[10px] tracking-widest uppercase py-2 relative z-20 overflow-hidden">
       <div className="max-w-7xl mx-auto px-1 flex items-center justify-center relative h-5">
-
         {/* TEXT */}
         {MESSAGES.map((text, i) => (
           <p

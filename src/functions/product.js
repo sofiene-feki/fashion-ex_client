@@ -163,3 +163,14 @@ export const getProductsByCategory = async ({
 // export const getProductOfTheYear = async () => {
 //   return await axios.get(`${API_BASE_URL}/products/productOfTheYear`);
 // };
+
+// Get dynamic product filters (colors & sizes)
+export const getProductFilters = async () => {
+  try {
+    const { data } = await axios.get(`${API_BASE_URL}/products/filters`);
+    return data; // { colors: [...], sizes: [...] }
+  } catch (error) {
+    console.error("❌ Error fetching product filters:", error);
+    throw error;
+  }
+};

@@ -38,6 +38,8 @@ import {
   setSortOption,
 } from "../../redux/shopFilters/pageOptions";
 import { useNavigate, useParams } from "react-router-dom";
+import { getCategories } from "../../functions/Categories";
+import { getProductFilters } from "../../functions/product";
 
 export default function Filters({ mobileFiltersOpen, setMobileFiltersOpen }) {
   const { selected, openSections } = useSelector((state) => state.filters);
@@ -45,41 +47,43 @@ export default function Filters({ mobileFiltersOpen, setMobileFiltersOpen }) {
 
   const dispatch = useDispatch();
 
+  // Dynamic filter options
+  const [categories, setCategories] = useState([]);
+  const [colors, setColors] = useState([]);
+  const [sizes, setSizes] = useState([]);
+
+  useEffect(() => {
+    const fetchFilters = async () => {
+      try {
+        // Categories
+        const { data: catData } = await getCategories();
+        setCategories(catData.map((c) => ({ value: c.name, label: c.name })));
+
+        // Colors & Sizes
+        const { colors: colorsData, sizes: sizesData } =
+          await getProductFilters();
+
+        // Remove duplicates and trim
+        const cleanArray = (arr) =>
+          [...new Set(arr.map((v) => v.trim()))].filter(Boolean);
+
+        setColors(cleanArray(colorsData).map((c) => ({ value: c, label: c })));
+        setSizes(cleanArray(sizesData).map((s) => ({ value: s, label: s })));
+      } catch (err) {
+        console.error("Error loading filters:", err);
+      }
+    };
+
+    fetchFilters();
+  }, []);
+
+  // Combine all filters for mapping
   const filters = [
-    {
-      id: "category",
-      name: "Category",
-      options: [
-        { value: "homme", label: "Homme" },
-        { value: "femme", label: "femme" },
-        { value: "enfant", label: "enfant" },
-      ],
-    },
-    {
-      id: "size",
-      name: "Size",
-      options: [
-        { value: "2l", label: "2L" },
-        { value: "6l", label: "6L" },
-        { value: "12l", label: "12L" },
-        { value: "18l", label: "18L" },
-        { value: "20l", label: "20L" },
-        { value: "40l", label: "40L" },
-      ],
-    },
-    {
-      id: "color",
-      name: "Color",
-      options: [
-        { value: "white", label: "White" },
-        { value: "beige", label: "Beige" },
-        { value: "blue", label: "Blue" },
-        { value: "brown", label: "Brown" },
-        { value: "green", label: "Green" },
-        { value: "purple", label: "Purple" },
-      ],
-    },
+    { id: "category", name: "Category", options: categories },
+    { id: "color", name: "Color", options: colors },
+    { id: "size", name: "Size", options: sizes },
   ];
+
   return (
     <>
       <Dialog
