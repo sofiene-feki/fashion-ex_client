@@ -26,9 +26,9 @@ export default function CategoryGrid() {
   };
 
   return (
-    <section className="mx-auto px-4 md:px-30 pt-2 md:pt-10 bg-white">
+    <section className="mx-auto px-4 md:px-30 pt-6 md:pt-10 bg-white">
       {/* GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
         {categories.map((cat, index) => (
           <CategoryCard key={index} cat={cat} />
         ))}
@@ -54,7 +54,7 @@ function CategoryCard({ cat }) {
       <div
         className="
         relative w-full
-        h-[380px] md:h-[420px]
+        h-[320px] md:h-[420px]
         overflow-hidden
         bg-black-100
         border border-[#f99e9a]/10

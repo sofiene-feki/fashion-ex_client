@@ -7,6 +7,8 @@ import HomeVideoSection from "../components/home/HomeVideoSection";
 import NewArrivals from "../components/home/NewArrivals";
 import Story from "../components/home/Story";
 import BrandStatement from "../components/home/BrandStatement";
+import HorizontalBrandScroll from "../components/home/brandLogo";
+import BestSellers from "../components/home/BestSellers";
 
 export default function Home() {
   const newArrivalsRef = useRef(null);
@@ -40,6 +42,7 @@ export default function Home() {
 
       <div className="relative">
         <Banner />
+        <HorizontalBrandScroll />
         <CategoryGrid />
         <BrandStatement />
 
@@ -53,7 +56,7 @@ export default function Home() {
           </div>
 
           <div ref={newArrivalsRef} className="relative z-20">
-            <NewArrivals />
+            <BestSellers />
           </div>
 
           <div className="relative z-20">
