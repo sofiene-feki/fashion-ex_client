@@ -4,7 +4,7 @@ import { Range } from "react-range";
 
 const STEP = 10;
 const MIN = 0;
-const MAX = 2000;
+const MAX = 500;
 
 export default function PriceRangeSlider({ values, setValues }) {
   return (

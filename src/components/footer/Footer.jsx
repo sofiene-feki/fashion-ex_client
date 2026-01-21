@@ -3,6 +3,7 @@ import instagram from "../ui/instagram.svg";
 import facebook from "../ui/facebook.svg";
 import tiktok from "../ui/tiktok.svg";
 import { FaFacebook, FaInstagram, FaTiktok } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -93,24 +94,25 @@ export default function Footer() {
           </div>
 
           {/* ===== Support ===== */}
-          <div className="hidden md:block">
-            <h4 className="text-lg md:text-xl font-heading mb-5 tracking-[0.18em] uppercase ">
+          <div>
+            <h4 className="text-lg md:text-xl font-heading mb-5 tracking-[0.18em] uppercase">
               Support
             </h4>
-            <ul className="space-y-3 text-sm md:text-base font-editorial">
+
+            <ul className="space-y-3 text-sm md:text-base font-header">
               {[
-                "Help Center",
-                "Terms of Service",
-                "Privacy Policy",
-                "Returns & Refunds",
-              ].map((text) => (
-                <li key={text}>
-                  <a
-                    href="#"
-                    className="/80 hover: transition-colors duration-300"
+                { label: "Help Center", to: "/contact" },
+                { label: "Terms of Service", to: "/terms-of-service" },
+                { label: "Privacy Policy", to: "/privacy-policy" },
+                { label: "Returns & Refunds", to: "/returns-refunds" },
+              ].map((item) => (
+                <li key={item.to}>
+                  <Link
+                    to={item.to}
+                    className="opacity-80 hover:opacity-100 transition-colors duration-300"
                   >
-                    {text}
-                  </a>
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>

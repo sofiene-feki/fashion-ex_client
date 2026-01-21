@@ -20,6 +20,9 @@ const LazyLogin = lazy(() => import("./pages/login"));
 const LazyOrders = lazy(() => import("./pages/Orders"));
 const LazyOrderDetail = lazy(() => import("./pages/OrderDetail"));
 const LazyPackDetails = lazy(() => import("./pages/PackDetails"));
+const LazyPrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const LazyReturnsRefunds = lazy(() => import("./pages/ReturnsRefunds"));
+const LazyTermsOfService = lazy(() => import("./pages/TermsOfService"));
 
 function App() {
   const location = useLocation();
@@ -75,6 +78,9 @@ function App() {
           <Route path="login" element={<LazyLogin />} />
           <Route path="about" element={<LazyAbout />} />
           <Route path="contact" element={<LazyContact />} />
+          <Route path="/terms-of-service" element={<LazyTermsOfService />} />
+          <Route path="/privacy-policy" element={<LazyPrivacyPolicy />} />
+          <Route path="/returns-refunds" element={<LazyReturnsRefunds />} />
           <Route path="shop" element={<LazyShop />} />
           <Route path="orders" element={<LazyOrders />} />
           <Route path="category/:Category" element={<LazyCategory />} />

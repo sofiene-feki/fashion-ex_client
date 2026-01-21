@@ -72,9 +72,12 @@ export default function HomeVideoSection({ title, subtitle, triggerRef }) {
     const handlePlayPause = () => {
       const videoRect = video.getBoundingClientRect();
       const newArrivalsRect = triggerRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+      const windowHeight =
+        window.innerHeight || document.documentElement.clientHeight;
 
-      const videoVisible = videoRect.top + videoRect.height * 0.3 < windowHeight && videoRect.bottom - videoRect.height * 0.3 > 0;
+      const videoVisible =
+        videoRect.top + videoRect.height * 0.3 < windowHeight &&
+        videoRect.bottom - videoRect.height * 0.3 > 0;
       const newArrivalsVisible = newArrivalsRect.top < windowHeight * 0.7;
 
       if (videoVisible && !newArrivalsVisible) {
@@ -117,7 +120,7 @@ export default function HomeVideoSection({ title, subtitle, triggerRef }) {
   };
 
   return (
-    <section className="sticky top-0 w-full h-[550px] my-6 overflow-hidden bg-black">
+    <section className="sticky top-0 w-full md:h-[750px] h-[550px] my-6 overflow-hidden bg-black">
       <video
         ref={videoRef}
         src={rsVideo}
@@ -133,8 +136,12 @@ export default function HomeVideoSection({ title, subtitle, triggerRef }) {
       {/* Text + Controls */}
       <div className="absolute inset-0 z-20 flex items-end justify-between px-2 md:px-10 pb-2">
         <div className="max-w-xl text-white">
-          <h2 className="text-md md:text-4xl font-serif tracking-wide">{title}</h2>
-          <p className=" text-xs md:text-base text-white/70 uppercase tracking-widest">{subtitle}</p>
+          <h2 className="text-md md:text-4xl font-serif tracking-wide">
+            {title}
+          </h2>
+          <p className=" text-xs md:text-base text-white/70 uppercase tracking-widest">
+            {subtitle}
+          </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -142,15 +149,25 @@ export default function HomeVideoSection({ title, subtitle, triggerRef }) {
             onClick={togglePlay}
             className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 text-white hover:bg-white/30 transition"
           >
-            {playing ? <PauseIcon className="w-4 h-4" /> : <PlayIcon className="w-4 h-4" />}
-            <span className="hidden md:inline">{playing ? "Pause" : "Play"}</span>
+            {playing ? (
+              <PauseIcon className="w-4 h-4" />
+            ) : (
+              <PlayIcon className="w-4 h-4" />
+            )}
+            <span className="hidden md:inline">
+              {playing ? "Pause" : "Play"}
+            </span>
           </button>
 
           <button
             onClick={toggleMute}
             className="p-2.5 rounded-full bg-white/20 backdrop-blur-xl border border-white/30 text-white hover:bg-white/30 transition"
           >
-            {muted ? <SpeakerXMarkIcon className="w-4 h-4" /> : <SpeakerWaveIcon className="w-4 h-4" />}
+            {muted ? (
+              <SpeakerXMarkIcon className="w-4 h-4" />
+            ) : (
+              <SpeakerWaveIcon className="w-4 h-4" />
+            )}
           </button>
         </div>
       </div>

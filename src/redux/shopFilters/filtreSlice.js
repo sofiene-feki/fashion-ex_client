@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   selected: {
-    priceRange: [0, 2000], // default min/max
+    priceRange: [0, 500], // default min/max
   },
   openSections: ["brand", "category", "color", "size", "priceRange"], // default open
 };

@@ -1,24 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+
 import { getProductsByCategory } from "../functions/product";
+import { getPacksByCategory } from "../functions/pack";
+
 import Header from "../components/shop/header";
 import Filters from "../components/shop/filters";
 import Product from "../components/product/Product";
-import Pagination from "../components/shop/Pagination";
-import { setCurrentPage } from "../redux/shopFilters/pageOptions";
-import { LoadingProduct } from "../components/ui";
 import Pack from "../components/product/Pack";
-import { getPacksByCategory } from "../functions/pack";
+import Pagination from "../components/shop/Pagination";
+import { LoadingProduct } from "../components/ui";
+import { setCurrentPage } from "../redux/shopFilters/pageOptions";
 
 export default function Category() {
   const { Category } = useParams();
+
   const [products, setProducts] = useState([]);
+  const [packs, setPacks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [packs, setPacks] = useState([]);
 
   const { currentPage, productsPerPage, sortOption } = useSelector(
     (state) => state.pageOptions
@@ -26,36 +30,40 @@ export default function Category() {
   const view = useSelector((state) => state.view.view);
   const dispatch = useDispatch();
 
+  const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
+  const SITE_URL = "https://www.clindoeilstore.com";
+
+  const formattedCategory = decodeURIComponent(Category)
+    .replace(/-/g, " ")
+    .trim();
+
   const handlePageChange = (page) => {
     dispatch(setCurrentPage(page));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
-
-  // Normalize single product or array of products
   const normalizeMediaSrc = (input) => {
     if (!input) return input;
 
     if (Array.isArray(input)) {
-      return input.map((product) => normalizeMediaSrc(product));
+      return input.map(normalizeMediaSrc);
     }
 
     if (!input.media) return input;
 
-    const normalizedMedia = input.media.map((m) => ({
-      ...m,
-      src: m.src.startsWith("http") ? m.src : API_BASE_URL_MEDIA + m.src,
-    }));
-
-    return { ...input, media: normalizedMedia };
+    return {
+      ...input,
+      media: input.media.map((m) => ({
+        ...m,
+        src: m.src.startsWith("http") ? m.src : API_BASE_URL_MEDIA + m.src,
+      })),
+    };
   };
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // fetch products
         const productData = await getProductsByCategory({
           category: Category,
           page: currentPage,
@@ -63,14 +71,10 @@ export default function Category() {
           sort: sortOption,
         });
 
-        const normalizedProducts = normalizeMediaSrc(
-          productData.products || []
-        );
-        setProducts(normalizedProducts);
+        setProducts(normalizeMediaSrc(productData.products || []));
         setTotalPages(productData.totalPages);
         setTotalProducts(productData.totalProducts);
 
-        // fetch packs
         const packData = await getPacksByCategory({
           category: Category,
           page: currentPage,
@@ -78,8 +82,7 @@ export default function Category() {
           sort: sortOption,
         });
 
-        const normalizedPacks = normalizeMediaSrc(packData.packs || []);
-        setPacks(normalizedPacks);
+        setPacks(normalizeMediaSrc(packData.packs || []));
       } catch (err) {
         console.error("❌ Error fetching data:", err);
       } finally {
@@ -94,64 +97,79 @@ export default function Category() {
   const end = Math.min((currentPage + 1) * productsPerPage, totalProducts);
 
   return (
-    <main className="mx-auto max-w-7xl  px-4 py-4 sm:px-6 lg:px-8">
-      <Header
-        setMobileFiltersOpen={setMobileFiltersOpen}
-        formattedCategory={Category}
-        totalProducts={totalProducts}
-      />
+    <>
+      <Helmet>
+        <title>{formattedCategory} | Clin d’Œil Store</title>
 
-      <section aria-labelledby="products-heading" className="pt-6 pb-24">
-        <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
-          <Filters
-            mobileFiltersOpen={mobileFiltersOpen}
-            setMobileFiltersOpen={setMobileFiltersOpen}
-          />
-          {loading ? (
-            <div className="lg:col-span-3">
-              {" "}
-              <LoadingProduct length={3} cols={3} />
-            </div>
-          ) : (
-            <div className="lg:col-span-3">
-              <div
-                className={
-                  view === "list"
-                    ? "flex flex-col space-y-4"
-                    : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 xl:gap-x-8"
-                }
-              >
-                {packs.map((pack) => (
-                  <Pack
-                    key={pack._id}
-                    product={pack}
-                    loading={loading}
-                    productsPerPage={productsPerPage}
-                  />
-                ))}
-                {products.map((product) => (
-                  <Product
-                    key={product._id}
-                    product={product}
-                    loading={loading}
-                    productsPerPage={productsPerPage}
-                  />
-                ))}
+        <meta
+          name="description"
+          content={`Découvrez ${totalProducts} produits dans la catégorie ${formattedCategory}. Livraison rapide et qualité garantie chez Clin d’Œil Store.`}
+        />
+
+        <link rel="canonical" href={`${SITE_URL}/category/${Category}`} />
+      </Helmet>
+
+      <main className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+        <Header
+          setMobileFiltersOpen={setMobileFiltersOpen}
+          formattedCategory={formattedCategory}
+          totalProducts={totalProducts}
+        />
+
+        <section aria-labelledby="products-heading" className="pt-6 pb-24">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+            <Filters
+              mobileFiltersOpen={mobileFiltersOpen}
+              setMobileFiltersOpen={setMobileFiltersOpen}
+            />
+
+            {loading ? (
+              <div className="lg:col-span-3">
+                <LoadingProduct length={3} cols={3} />
               </div>
-              <div className="flex justify-between items-center mt-8">
-                <Pagination
-                  currentPage={currentPage}
-                  pageCount={totalPages}
-                  onPageChange={handlePageChange}
-                />
-                <p className="text-gray-500 mt-8">
-                  {start} à {end} sur {totalProducts} produits
-                </p>
+            ) : (
+              <div className="lg:col-span-3">
+                <div
+                  className={
+                    view === "list"
+                      ? "flex flex-col space-y-4"
+                      : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 xl:gap-x-8"
+                  }
+                >
+                  {packs.map((pack) => (
+                    <Pack
+                      key={pack._id}
+                      product={pack}
+                      loading={loading}
+                      productsPerPage={productsPerPage}
+                    />
+                  ))}
+
+                  {products.map((product) => (
+                    <Product
+                      key={product._id}
+                      product={product}
+                      loading={loading}
+                      productsPerPage={productsPerPage}
+                    />
+                  ))}
+                </div>
+
+                <div className="flex justify-between items-center mt-8">
+                  <Pagination
+                    currentPage={currentPage}
+                    pageCount={totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                  <p className="text-gray-500 mt-8">
+                    {start} à {end} sur {totalProducts} produits
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-      </section>
-    </main>
+            )}
+          </div>
+        </section>
+      </main>
+    </>
   );
 }

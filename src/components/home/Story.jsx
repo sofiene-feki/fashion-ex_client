@@ -215,13 +215,35 @@ group-hover:shadow-[0_20px_60px_rgba(249,158,154,0.22)]
 /* ================= FULLSCREEN (UNCHANGED LOGIC, CLEAN) ================= */
 function FullscreenReels({ slides, startIndex, onClose }) {
   const videoRef = useRef(null);
+  const touchStartY = useRef(0);
+  const touchEndY = useRef(0);
+
   const [index, setIndex] = useState(startIndex);
   const [muted, setMuted] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [direction, setDirection] = useState(0); // 1 = next/up, -1 = prev/down
+  const [animating, setAnimating] = useState(false);
+  const [nextVideo, setNextVideo] = useState(null);
 
   const current = slides[index];
-  const isMobile = window.innerWidth < 768;
 
-  /* ================= PLAY ================= */
+  /* ================= MOBILE DETECTION ================= */
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  /* ================= BODY SCROLL LOCK ================= */
+  useEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
+
+  /* ================= VIDEO PLAY ================= */
   useEffect(() => {
     if (!videoRef.current) return;
     videoRef.current.currentTime = 0;
@@ -231,46 +253,77 @@ function FullscreenReels({ slides, startIndex, onClose }) {
   /* ================= KEYBOARD (DESKTOP) ================= */
   useEffect(() => {
     if (isMobile) return;
-
     const onKey = (e) => {
-      if (e.key === "ArrowDown") next();
-      if (e.key === "ArrowUp") prev();
+      if (e.key === "ArrowDown") handleNext();
+      if (e.key === "ArrowUp") handlePrev();
       if (e.key === "Escape") onClose();
     };
-
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [index, isMobile]);
 
-  const next = () => {
-    setIndex((i) => Math.min(i + 1, slides.length - 1));
+  /* ================= SWIPE HANDLERS ================= */
+  const handleTouchStart = (e) => {
+    touchStartY.current = e.touches[0].clientY;
   };
 
-  const prev = () => {
-    setIndex((i) => Math.max(i - 1, 0));
+  const handleTouchMove = (e) => {
+    touchEndY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = () => {
+    const delta = touchStartY.current - touchEndY.current;
+    if (Math.abs(delta) < 50) return;
+    if (delta > 0) handleNext();
+    else handlePrev();
+  };
+
+  /* ================= NAVIGATION ================= */
+  const handleNext = () => {
+    if (animating || index >= slides.length - 1) return;
+    setDirection(1);
+    setNextVideo(slides[index + 1]);
+    setAnimating(true);
+  };
+
+  const handlePrev = () => {
+    if (animating || index <= 0) return;
+    setDirection(-1);
+    setNextVideo(slides[index - 1]);
+    setAnimating(true);
+  };
+
+  const onAnimationEnd = () => {
+    if (!nextVideo) return;
+    setIndex((prev) => (direction === 1 ? prev + 1 : prev - 1));
+    setNextVideo(null);
+    setAnimating(false);
   };
 
   if (!current) return null;
 
   return (
-    <div className="fixed inset-0 z-100 p-0  md:pt-20 md:pb-6 bg-black flex items-center justify-center">
+    <div className="fixed inset-0 z-[100] bg-black flex items-center justify-center overflow-hidden">
       {/* CLOSE */}
       <button
         onClick={onClose}
-        className="absolute top-20   right-4 text-white z-50"
+        className="absolute top-20 right-4 text-white z-50"
       >
         <XMarkIcon className="w-7 h-7" />
       </button>
 
-      {/* VIDEO WRAPPER */}
+      {/* VIDEO CONTAINER */}
       <div
         className={`
-      relative h-full w-full
-      ${isMobile ? "" : "max-w-[450px]"}
-      flex items-center justify-center
-    `}
+          relative h-full w-full pt-40 rounded-2xl
+          ${isMobile ? "" : "max-w-[450px]"}
+          flex items-center justify-center overflow-hidden
+        `}
+        onTouchStart={isMobile ? handleTouchStart : undefined}
+        onTouchMove={isMobile ? handleTouchMove : undefined}
+        onTouchEnd={isMobile ? handleTouchEnd : undefined}
       >
-        {/* VIDEO */}
+        {/* CURRENT VIDEO */}
         <video
           key={current._id}
           ref={videoRef}
@@ -279,32 +332,48 @@ function FullscreenReels({ slides, startIndex, onClose }) {
           playsInline
           loop
           className={`
-        w-full h-full bg-black
-        ${isMobile ? "object-cover" : "object-cover rounded-2xl"}
-      `}
+            absolute w-full h-full bg-black object-cover 
+            transition-transform duration-50 ease-in-out
+            ${
+              animating
+                ? direction === 1
+                  ? "-translate-y-full"
+                  : "translate-y-full"
+                : "translate-y-0"
+            }
+          `}
+          onTransitionEnd={onAnimationEnd}
           onClick={() => setMuted((m) => !m)}
         />
 
+        {/* NEXT VIDEO */}
+        {nextVideo && (
+          <video
+            key={nextVideo._id}
+            src={nextVideo.videoUrl}
+            muted={muted}
+            playsInline
+            loop
+            className={`
+              absolute w-full h-full bg-black object-cover rounded-2xl
+              transition-transform duration-300 ease-in-out
+              ${direction === 1 ? "translate-y-full" : "-translate-y-full"}
+            `}
+            style={{ transform: "translateY(0)" }}
+          />
+        )}
+
         {/* BOTTOM BAR */}
-        <div
-          className={`
-        absolute w-full bottom-0
-        flex item-center justify-between 
-        bg-black/10 
-        px-4 py-2 rounded-xl
-      `}
-        >
-          {/* TEXT */}
-          <div className="text-white">
-            <h2 className="text-base md:text-lg mt-2 font-semibold leading-tight">
+        <div className="absolute bottom-0 w-full px-4 py-3 bg-black/20 backdrop-blur-sm flex items-end justify-between">
+          <div className="text-white max-w-[75%]">
+            <h2 className="text-base font-semibold leading-tight">
               {current.title}
             </h2>
-            <p className="text-xs md:text-sm opacity-80">
+            <p className="text-xs opacity-80 line-clamp-2">
               {current.description}
             </p>
           </div>
 
-          {/* MUTE */}
           <button
             onClick={() => setMuted((m) => !m)}
             className="shrink-0 bg-black/60 p-2 rounded-full text-white"
@@ -322,7 +391,7 @@ function FullscreenReels({ slides, startIndex, onClose }) {
       {!isMobile && (
         <div className="absolute right-6 flex flex-col gap-3 z-30">
           <button
-            onClick={prev}
+            onClick={handlePrev}
             disabled={index === 0}
             className="bg-white/10 hover:bg-white/20 p-3 rounded-full text-white disabled:opacity-30"
           >
@@ -330,7 +399,7 @@ function FullscreenReels({ slides, startIndex, onClose }) {
           </button>
 
           <button
-            onClick={next}
+            onClick={handleNext}
             disabled={index === slides.length - 1}
             className="bg-white/10 hover:bg-white/20 p-3 rounded-full text-white disabled:opacity-30"
           >
