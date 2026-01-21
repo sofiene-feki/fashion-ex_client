@@ -7,14 +7,30 @@ export default function TermsOfService() {
   return (
     <>
       <Helmet>
-        <title>Conditions Générales d’Utilisation | Clin d’Œil Store</title>
-
+        <title>Conditions Générales d’Utilisation – Clin d’Oeil Store</title>
         <meta
           name="description"
-          content="Consultez les Conditions Générales d’Utilisation de Clin d’Œil Store : droits et obligations, accès au site, commandes, responsabilité et droit applicable en Tunisie."
+          content="Lisez les conditions générales d’utilisation de Clin d’Oeil Store et nos services."
+        />
+        <link
+          rel="canonical"
+          href="https://www.clindoeilstore.com/terms-of-service"
         />
 
-        <link rel="canonical" href={`${SITE_URL}/terms-of-service`} />
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="Conditions Générales d’Utilisation – Clin d’Oeil Store"
+        />
+        <meta
+          property="og:description"
+          content="Lisez les conditions générales d’utilisation de Clin d’Oeil Store et nos services."
+        />
+        <meta
+          property="og:url"
+          content="https://www.clindoeilstore.com/terms-of-service"
+        />
+        <meta property="og:type" content="website" />
       </Helmet>
 
       <section className="bg-white">

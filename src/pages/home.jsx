@@ -14,12 +14,28 @@ export default function Home() {
   return (
     <>
       <Helmet>
-        <title>Clin D’Oeil Store – Fashion & Elegance</title>
+        <title>Clin d’Oeil Store – Mode Femme, Vêtements Tendance</title>
         <meta
           name="description"
-          content="Discover the latest fashion trends at Clin D’Oeil Store. New arrivals, elegant collections, and premium styles."
+          content="Découvrez Clin d’Oeil Store : boutique en ligne de vêtements tendance pour femmes, nouvelles collections et styles élégants en Tunisie."
         />
-        <link rel="canonical" href="https://your-domain.com/" />
+        <link rel="canonical" href="https://www.clindoeilstore.com/" />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="Clin d’Oeil Store – Mode Femme, Vêtements Tendance"
+        />
+        <meta
+          property="og:description"
+          content="Découvrez Clin d’Oeil Store : boutique en ligne de vêtements tendance pour femmes, nouvelles collections et styles élégants en Tunisie."
+        />
+        <meta property="og:url" content="https://www.clindoeilstore.com/" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:image"
+          content="https://www.clindoeilstore.com/og-home.jpg"
+        />
       </Helmet>
 
       <div className="relative">

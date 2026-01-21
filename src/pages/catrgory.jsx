@@ -99,14 +99,31 @@ export default function Category() {
   return (
     <>
       <Helmet>
-        <title>{formattedCategory} | Clin d’Œil Store</title>
-
+        <title>{Category} – Clin d’Oeil Store</title>
         <meta
           name="description"
-          content={`Découvrez ${totalProducts} produits dans la catégorie ${formattedCategory}. Livraison rapide et qualité garantie chez Clin d’Œil Store.`}
+          content={`Découvrez nos produits ${Category} sur Clin d’Oeil Store, boutique en ligne de vêtements tendance.`}
+        />
+        <link
+          rel="canonical"
+          href={`https://www.clindoeilstore.com/category/${Category}`}
         />
 
-        <link rel="canonical" href={`${SITE_URL}/category/${Category}`} />
+        {/* Open Graph */}
+        <meta property="og:title" content={`${Category} – Clin d’Oeil Store`} />
+        <meta
+          property="og:description"
+          content={`Découvrez nos produits ${Category} sur Clin d’Oeil Store, boutique en ligne de vêtements tendance.`}
+        />
+        <meta
+          property="og:url"
+          content={`https://www.clindoeilstore.com/category/${Category}`}
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:image"
+          content="https://www.clindoeilstore.com/og-category.jpg"
+        />
       </Helmet>
 
       <main className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">

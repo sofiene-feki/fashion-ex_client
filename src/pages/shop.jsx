@@ -86,13 +86,27 @@ export default function Shop() {
         <title>
           Boutique Mode Femme | Clin d’Oeil Store – Vêtements Tendance
         </title>
-
         <meta
           name="description"
           content="Découvrez la boutique en ligne Clin d’Oeil Store : vêtements tendance, mode femme, nouvelles collections et styles élégants disponibles en Tunisie."
         />
+        <link rel="canonical" href="https://www.clindoeilstore.com/shop" />
 
-        <link rel="canonical" href={`${SITE_URL}/shop`} />
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="Boutique Mode Femme | Clin d’Oeil Store"
+        />
+        <meta
+          property="og:description"
+          content="Découvrez la boutique en ligne Clin d’Oeil Store : vêtements tendance pour femmes."
+        />
+        <meta property="og:url" content="https://www.clindoeilstore.com/shop" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:image"
+          content="https://www.clindoeilstore.com/og-shop.jpg"
+        />
       </Helmet>
 
       <main className="mx-auto max-w-7xl px-4 md:py-10 sm:px-6 lg:px-8">
