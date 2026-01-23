@@ -42,24 +42,24 @@ export default function CategoryGrid() {
 /* ========================= */
 function CategoryCard({ cat }) {
   const { ref, inView } = useInView({
-    threshold: 0.6,
+    threshold: 0.9,
     triggerOnce: true,
   });
 
   const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
 
   return (
-    <Link ref={ref} to={cat.link} className="block">
+    <Link ref={ref} to={cat.link} className="block group">
       {/* IMAGE CONTAINER */}
       <div
         className="
-        relative w-full
-        h-[320px] md:h-[420px]
-        overflow-hidden
-        bg-black-100
-        border border-[#f99e9a]/10
-        shadow-[0_10px_30px_rgba(249,158,154,0.18)]
-      "
+          relative w-full
+          h-[320px] md:h-[420px]
+          overflow-hidden
+          bg-black-100
+          border border-[#f99e9a]/10
+          shadow-[0_10px_30px_rgba(249,158,154,0.18)]
+        "
       >
         {/* IMAGE */}
         <img
@@ -71,24 +71,20 @@ function CategoryCard({ cat }) {
             ${inView ? "scale-100" : "scale-[1.2]"}
           `}
         />
-
-        {/* CENTERED TEXT OVER IMAGE */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <h3
-            className={`
-              text-white
-              font-heading text-3xl 
-              text-center bg-clip-text drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] 
-              transition-all duration-700 ease-out uppercase
-              ${
-                inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-              }
-            `}
-          >
-            {cat.title}
-          </h3>
-        </div>
       </div>
+
+      {/* TITLE UNDER IMAGE */}
+      <h3
+        className={`
+          mt-2 text-gray-900
+          font-heading text-xl md:text-md
+          text-center uppercase
+          transition-all duration-700 ease-out
+          ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
+        `}
+      >
+        {cat.title}
+      </h3>
     </Link>
   );
 }
