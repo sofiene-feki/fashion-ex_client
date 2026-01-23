@@ -70,20 +70,19 @@ button:focus-visible {
 
 @import "tailwindcss";
 @font-face {
-  font-family: "ITC Eras Std Bold";
-  src: url("/fonts/ITCErasStd-Bold.otf") format("opentype");
-  font-weight: bold;
+  font-family: "Castellar";
+  src: url("/fonts/Castellar-Regular.ttf") format("truetype");
   font-style: normal;
 }
 
 :root {
   /* Luxury fashion palette */
   --font-heading: "Playfair Display", serif; /* Editorial / luxury titles */
-  --font-body: "Assistant", sans-serif;      /* Clean premium body */
-  --font-ui: "Inter Tight", sans-serif;       /* Buttons, UI, labels */
-  --font-arabic: "Cairo", sans-serif;         /* Arabic content */
+  --font-body: "Assistant", sans-serif; /* Clean premium body */
+  --font-ui: "Inter Tight", sans-serif; /* Buttons, UI, labels */
+  --font-arabic: "Cairo", sans-serif; /* Arabic content */
+  --font-category: "Castellar", serif;
 }
-
 
 @import "tailwindcss";
 @keyframes gradientMove {
@@ -107,6 +106,9 @@ button:focus-visible {
   --breakpoint-sm: 480px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 976px;
+}
+.font-category {
+  font-family: var(--font-category);
 }
 
 @keyframes pulse-glow {
@@ -240,5 +242,3 @@ button:focus-visible {
   letter-spacing: 0;
   direction: rtl;
 }
-
-

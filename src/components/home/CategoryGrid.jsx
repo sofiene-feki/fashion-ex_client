@@ -77,8 +77,8 @@ function CategoryCard({ cat }) {
       <h3
         className={`
           mt-2 text-gray-900
-          font-heading text-xl md:text-md
-          text-center uppercase
+          font-category 
+          text-center text-md font-semibold leading-tight
           transition-all duration-700 ease-out
           ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
         `}
