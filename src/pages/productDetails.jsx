@@ -139,7 +139,7 @@ export default function ProductDetails() {
           setSelectedMedia(
             normalizedProduct.colors?.[0]?.src ||
               normalizedProduct.media?.[0]?.src ||
-              ""
+              "",
           );
 
           console.log("✅ Product fetched:", normalizedProduct);
@@ -190,7 +190,7 @@ export default function ProductDetails() {
         selectedColor: selectedColor?.name ?? null,
         colors: product.colors,
         sizes: product.sizes,
-      })
+      }),
     );
 
     dispatch(openCart());
@@ -228,7 +228,7 @@ export default function ProductDetails() {
         selectedColor: selectedColor?.name ?? null,
         colors: product.colors,
         sizes: product.sizes,
-      })
+      }),
     );
     navigate("/checkout"); // Redirect to cart page
 
@@ -280,7 +280,7 @@ export default function ProductDetails() {
     setProduct((prev) => ({
       ...prev,
       [type]: prev[type].map((item, i) =>
-        i === idx ? { ...item, [key]: value } : item
+        i === idx ? { ...item, [key]: value } : item,
       ),
     }));
     console.log(`Updated `, product);
@@ -410,7 +410,7 @@ export default function ProductDetails() {
 
       // Append existing media IDs as repeated fields
       existingMediaIds.forEach((id) =>
-        formData.append("existingMediaIds[]", id)
+        formData.append("existingMediaIds[]", id),
       );
 
       // -------------------------
@@ -448,7 +448,7 @@ export default function ProductDetails() {
     } catch (err) {
       console.error(
         "❌ Error updating product:",
-        err.response?.data || err.message
+        err.response?.data || err.message,
       );
     } finally {
       setActionLoading(false);
@@ -495,7 +495,7 @@ export default function ProductDetails() {
   };
 
   return (
-    <div className="md:py-6 py-2">
+    <div className="md:py-6 py-0">
       {product && !loading && (
         <Helmet>
           <title>{product.Title} | Clin d'Oeil Store</title>
@@ -561,7 +561,7 @@ export default function ProductDetails() {
       )}
 
       {user && (
-        <div className="flex top-14.5 z-10 sticky bg-white max-w-5xl mx-auto items-center justify-between border-b border-gray-200 py-2 px-2 shadow-xl">
+        <div className="flex top-14 z-10 sticky bg-white max-w-5xl mx-auto items-center justify-between border-b border-gray-200 py-2 px-2 shadow-xl">
           {/* Center title */}
           <h1 className="md:text-xl text-base font-semibold text-gray-800">
             {isCreate ? "Créer un produit" : isEdit ? "Modifier produit" : ""}
@@ -674,7 +674,7 @@ export default function ProductDetails() {
                 <div className="h-8 mb-2 w-3/4 bg-gray-200 rounded-lg animate-pulse"></div>
               ) : (
                 <h1
-                  className="text-2xl mt-8        font-heading
+                  className="text-2xl mt-4 font-heading
  bg-clip-text drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)] font-bold text-gray-900 sm:text-xl sm:mb-2"
                 >
                   {product.Title}
@@ -755,7 +755,7 @@ export default function ProductDetails() {
                 handleChangeProduct={handleChangeProduct}
               />
             ) : loading ? (
-              <div className="h-16 w-full bg-gray-200 rounded-lg animate-pulse"></div>
+              <div className="h-16 w-full  bg-gray-200 rounded-lg animate-pulse"></div>
             ) : (
               <HorizontalSlider scrollAmount={120} className="">
                 {product.colors?.map((c, i) => (
@@ -765,7 +765,7 @@ export default function ProductDetails() {
                       selectedColor?.name === c.name
                         ? "ring-2 ring-[#000000] ring-offset-2"
                         : "ring-1 ring-gray-100",
-                      "md:w-16 md:h-16 w-18 h-18 rounded-full border border-gray-500 overflow-hidden flex-shrink-0"
+                      "md:w-16 md:h-16 w-18 h-18  rounded-full border border-gray-500 overflow-hidden flex-shrink-0",
                     )}
                     style={{ borderColor: c.value ?? "#000" }}
                     onClick={() => {
@@ -821,7 +821,7 @@ export default function ProductDetails() {
                       selectedSize?.name === s.name
                         ? "border-gray-900 bg-gray-900 text-white" // active = strong black
                         : "border-gray-300 bg-white text-gray-700 hover:border-gray-500",
-                      "flex-shrink-0 border rounded-md px-3 py-2 text-sm font-heading font-medium transition"
+                      "flex-shrink-0 border rounded-md px-3 py-2 text-sm font-heading font-medium transition",
                     )}
                   >
                     {s.name}

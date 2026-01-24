@@ -46,7 +46,7 @@ export default function HorizontalSlider({
       {/* Scrollable container */}
       <div
         ref={sliderRef}
-        className="flex gap-3 py-2 overflow-x-auto scrollbar-hide scroll-smooth"
+        className="flex gap-3 px-2 py-2 overflow-x-auto scrollbar-hide scroll-smooth"
       >
         {children}
       </div>

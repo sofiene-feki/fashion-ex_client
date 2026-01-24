@@ -69,7 +69,7 @@ export default function Story() {
           }
         });
       },
-      { threshold: 0.6 }
+      { threshold: 0.6 },
     );
 
     videoRefs.current.forEach((v) => v && observerRef.current.observe(v));

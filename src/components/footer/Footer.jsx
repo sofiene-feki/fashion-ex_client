@@ -32,10 +32,10 @@ export default function Footer() {
               <p>
                 <strong>Email:</strong>{" "}
                 <a
-                  href="mailto:contact@skands.com"
+                  href="mailto:contact@clindoeilstore.com"
                   className="hover:underline  transition-colors"
                 >
-                  contact@clin-doeil.com
+                  contact@clindoeilstore.com{" "}
                 </a>
               </p>
             </div>
@@ -80,14 +80,19 @@ export default function Footer() {
               Quick Links
             </h4>
             <ul className="space-y-3 text-sm md:text-base font-editorial">
-              {["Home", "Shop", "About Us", "Contact"].map((text) => (
-                <li key={text}>
-                  <a
-                    href="#"
-                    className="/80 hover: transition-colors duration-300"
+              {[
+                { label: "Home", to: "/" },
+                { label: "Shop", to: "/Shop" },
+                { label: "About Us", to: "/About" },
+                { label: "Contact", to: "/Contact" },
+              ].map((item) => (
+                <li key={item.to}>
+                  <Link
+                    to={item.to}
+                    className="opacity-80 hover:opacity-100 transition-colors duration-300"
                   >
-                    {text}
-                  </a>
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>

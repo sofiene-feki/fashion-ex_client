@@ -192,7 +192,7 @@ export default function ProductMediaGallery({
                         <img
                           src={m.src}
                           alt=""
-                          className="w-full object-contain rounded-lg"
+                          className="w-full h-125 object-cover rounded-b-lg shadow-md"
                         />
                       ) : (
                         <video
