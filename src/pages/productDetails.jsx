@@ -561,7 +561,7 @@ export default function ProductDetails() {
       )}
 
       {user && (
-        <div className="flex top-14 z-10 sticky bg-white max-w-5xl mx-auto items-center justify-between border-b border-gray-200 py-2 px-2 shadow-xl">
+        <div className="flex top-14 z-10 sticky bg-white max-w-6xl mx-auto items-center justify-between border-b border-gray-200 py-2 px-2 mb-0 md:mb-4 shadow-xl">
           {/* Center title */}
           <h1 className="md:text-xl text-base font-semibold text-gray-800">
             {isCreate ? "Créer un produit" : isEdit ? "Modifier produit" : ""}

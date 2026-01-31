@@ -9,7 +9,8 @@ import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 import CustomModal from "../ui/Modal";
 import HorizontalSlider from "../ui/HorizontalSlider";
 import { getAllMedia } from "../../functions/media";
-
+import InnerImageZoom from "react-inner-image-zoom";
+import "react-inner-image-zoom/lib/styles.min.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -148,7 +149,7 @@ export default function ProductMediaGallery({
             {/* Single OR Desktop Media */}
             <div
               onClick={isSingle ? handleSingleClick : undefined}
-              className={`relative aspect-square bg-black rounded-lg ${
+              className={`relative  bg-black rounded-lg ${
                 !isSingle ? "hidden lg:block" : ""
               } ${
                 isSingle && isEditable ? "cursor-pointer hover:opacity-90" : ""
@@ -168,17 +169,22 @@ export default function ProductMediaGallery({
               )}
 
               {selectedMedia?.type === "image" ? (
-                <img
-                  src={selectedMedia.src}
-                  alt=""
-                  className="w-full h-full object-contain rounded-lg"
-                />
+                <div className="w-full aspect-[4/5] overflow-hidden rounded-lg">
+                  <InnerImageZoom
+                    src={selectedMedia.src}
+                    zoomSrc={selectedMedia.src}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               ) : (
-                <video
-                  src={selectedMedia.src}
-                  controls
-                  className="w-full h-full object-contain rounded-lg"
-                />
+                <div className="w-full aspect-video overflow-hidden rounded-lg">
+                  <video
+                    src={selectedMedia.src}
+                    controls
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               )}
             </div>
 
@@ -189,10 +195,12 @@ export default function ProductMediaGallery({
                   {sliderData.map((m, i) => (
                     <div key={i}>
                       {m.type === "image" ? (
-                        <img
-                          src={m.src}
+                        <InnerImageZoom
+                          src={selectedMedia.src}
+                          zoomSrc={selectedMedia.src}
+                          fullscreenOnMobile={true}
                           alt=""
-                          className="w-full h-125 object-cover rounded-b-lg shadow-md"
+                          className="myZoom w-full h-125 object-cover rounded-b-lg shadow-md"
                         />
                       ) : (
                         <video

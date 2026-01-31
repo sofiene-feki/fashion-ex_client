@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import { addItem } from "../../redux/cart/cartSlice";
 import { openCart } from "../../redux/ui/cartDrawer";
+import InnerImageZoom from "react-inner-image-zoom";
 
 const API_BASE_URL_MEDIA = import.meta.env.VITE_API_BASE_URL_MEDIA;
 
@@ -54,7 +55,7 @@ export default function Product({ product, loading }) {
       <Link
         to={`/product/${product.slug}`}
         className="flex flex-col overflow-hidden bg-white
-border border-[#f99e9a]/10
+border border-[#f99e9a]/30
 shadow-[0_12px_40px_rgba(249,158,154,0.18)]
 transition-all duration-500 ease-out
 group-hover:shadow-[0_20px_60px_rgba(249,158,154,0.22)]
@@ -64,11 +65,12 @@ group-hover:shadow-[0_20px_60px_rgba(249,158,154,0.22)]
         <div className="overflow-hidden">
           <Slider {...sliderSettings}>
             {/* Main image */}
-            <div>
+
+            <div className="w-full aspect-[4/5] overflow-hidden rounded-b-xl">
               <img
                 src={imageSrc}
                 alt={product.Title}
-                className="w-full h-96 md:h-96 object-cover group-hover:scale-105 transition-transform"
+                className="w-full h-full object-cover"
               />
             </div>
 

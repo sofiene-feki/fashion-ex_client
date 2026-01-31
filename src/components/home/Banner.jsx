@@ -31,8 +31,8 @@ export default function Banner() {
   const settings = {
     dots: true,
     infinite: true,
-    autoplay: false,
-    autoplaySpeed: 4000,
+    autoplay: true,
+    autoplaySpeed: 5000,
     speed: 800,
     slidesToShow: 1,
     slidesToScroll: 1,

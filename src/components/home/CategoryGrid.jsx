@@ -42,7 +42,7 @@ export default function CategoryGrid() {
 /* ========================= */
 function CategoryCard({ cat }) {
   const { ref, inView } = useInView({
-    threshold: 0.9,
+    threshold: 0.8,
     triggerOnce: true,
   });
 
@@ -53,8 +53,7 @@ function CategoryCard({ cat }) {
       {/* IMAGE CONTAINER */}
       <div
         className="
-          relative w-full
-          h-[320px] md:h-[420px]
+          relative w-full aspect-[4/5]
           overflow-hidden
           bg-black-100
           border border-[#f99e9a]/10
@@ -72,15 +71,23 @@ function CategoryCard({ cat }) {
           `}
         />
       </div>
+      {/* 
+      <div className="w-full aspect-[4/5] overflow-hidden rounded-b-lg">
+        <img
+          src={imageSrc}
+          alt={product.Title}
+          className="w-full h-full object-cover"
+        />
+      </div> */}
 
       {/* TITLE UNDER IMAGE */}
       <h3
         className={`
-          mt-2 text-gray-900
+          mt-4 text-gray-900
           font-category 
-          text-center text-md font-semibold leading-tight
-          transition-all duration-700 ease-out
-          ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
+          text-center text-lg font-semibold leading-tight
+          transition-all duration-900 ease-out
+          ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
         `}
       >
         {cat.title}
