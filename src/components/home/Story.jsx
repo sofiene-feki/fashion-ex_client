@@ -9,8 +9,17 @@ import {
   XMarkIcon,
   PlayIcon,
   PauseIcon,
+  TrashIcon,
 } from "@heroicons/react/24/solid";
-import { getStorySlides } from "../../functions/storySlide";
+import CustomModal from "../ui/Modal";
+import { Input, Textarea } from "../ui";
+import logoBlack from "../../assets/bragaouiBlack.png";
+
+import {
+  createStorySlide,
+  deleteStorySlide,
+  getStorySlides,
+} from "../../functions/storySlide";
 import { NextArrow, PrevArrow } from "../ui";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 
@@ -22,7 +31,14 @@ export default function Story() {
   const [fullscreen, setFullscreen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
+  const [open, setOpen] = useState(false);
+  const [newSlide, setNewSlide] = useState({
+    title: "",
+    description: "",
+    video: null,
+    cta: "",
+    link: "",
+  });
   const videoRefs = useRef([]);
   const observerRef = useRef(null);
 
@@ -96,7 +112,72 @@ export default function Story() {
     arrows: false,
     swipeToSlide: true,
   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    try {
+      if (!newSlide.video) {
+        alert("Please select a video before submitting.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("title", newSlide.title);
+      formData.append("description", newSlide.description);
+      formData.append("cta", newSlide.cta || "");
+      formData.append("link", newSlide.link || "");
+      formData.append("video", newSlide.video);
+
+      // Call Axios function
+      const res = await createStorySlide(formData);
+
+      console.log("✅ New slide created:", res.data);
+      alert("Slide created successfully!");
+
+      // Optional: reset form
+      setNewSlide({
+        title: "",
+        description: "",
+        cta: "",
+        link: "",
+        video: null,
+      });
+
+      // Close modal
+      setOpen(false);
+    } catch (err) {
+      console.error("❌ Error creating slide:", err);
+      alert("Failed to create slide. Check console for details.");
+    }
+  };
+  const handleDelete = async (slideId) => {
+    if (!window.confirm("Are you sure you want to delete this slide?")) return;
+
+    try {
+      await deleteStorySlide(slideId);
+      // remove deleted slide from local state
+      setSlides((prevSlides) => prevSlides.filter((s) => s._id !== slideId));
+      alert("Slide deleted successfully!");
+    } catch (err) {
+      console.error("❌ Failed to delete slide:", err);
+      alert("Failed to delete slide. Check console for details.");
+    }
+  };
+
+  const [videoSrc, setVideoSrc] = useState(null);
+
+  useEffect(() => {
+    if (!newSlide.video) {
+      setVideoSrc(null);
+      return;
+    }
+
+    const url = URL.createObjectURL(newSlide.video);
+    setVideoSrc(url);
+
+    // Clean up old URL when component unmounts or file changes
+    return () => URL.revokeObjectURL(url);
+  }, [newSlide.video]);
   return (
     <div className="bg-white py-10">
       <div className="mx-auto md:mx-30 py-6 md:py-16 bg-white">
@@ -130,76 +211,225 @@ export default function Story() {
         </div>
 
         <Slider {...(isMobile ? mobileSettings : desktopSettings)}>
-          {slides.map((s, i) => (
+          <>
+            {" "}
             <div
-              key={s._id}
-              className="px-2 relative cursor-pointer "
-              onClick={() => {
-                setStartIndex(i);
-                setFullscreen(true);
-              }}
+              onClick={() => setOpen(true)}
+              className="relative flex flex-col items-center justify-center h-[300px] md:h-[350px] bg-gray-50 border border-gray-300 rounded-xl mx-2 cursor-pointer hover:bg-gray-200 transition"
             >
-              <video
-                ref={(el) => (videoRefs.current[i] = el)}
-                data-index={i}
-                src={s.videoUrl}
-                muted={muted}
-                playsInline
-                preload="metadata"
-                loop
-                className="h-[350px] w-full object-cover border border-[#f99e9a]/10
+              {/* Middle logo */}
+              <img
+                className="h-36 w-auto"
+                src={logoBlack}
+                alt="Your Company"
+                draggable={false}
+              />
+
+              {/* Bottom circle with + */}
+              <div className="absolute -bottom-6 w-12 h-12 rounded-full bg-white border border-gray-300 flex items-center justify-center shadow-md">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-6 h-6 text-blue-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+              </div>
+            </div>
+            <p className="mt-8 text-center text-gray-700 font-medium">
+              Crée une story
+            </p>
+          </>
+          {slides.map((s, i) => (
+            <>
+              <div
+                key={s._id}
+                className="px-2 relative cursor-pointer "
+                onClick={() => {
+                  setStartIndex(i);
+                  setFullscreen(true);
+                }}
+              >
+                <video
+                  ref={(el) => (videoRefs.current[i] = el)}
+                  data-index={i}
+                  src={s.videoUrl}
+                  muted={muted}
+                  playsInline
+                  preload="metadata"
+                  loop
+                  className="h-[350px] w-full object-cover border border-[#f99e9a]/10
 shadow-[0_12px_40px_rgba(249,158,154,0.18)]
 transition-all duration-500 ease-out
 group-hover:shadow-[0_20px_60px_rgba(249,158,154,0.22)]
  transition"
-              />
+                />
 
-              {/* RIGHT CONTROLS */}
-              <div className="absolute right-3 top-3 flex flex-col gap-2 z-20">
-                {/* PLAY / PAUSE */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const video = videoRefs.current[i];
-                    if (!video) return;
+                {/* RIGHT CONTROLS */}
+                <div className="absolute right-3 top-3 flex flex-col gap-2 z-20">
+                  {/* PLAY / PAUSE */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const video = videoRefs.current[i];
+                      if (!video) return;
 
-                    if (video.paused) {
-                      setActiveVideo(i);
-                      video.play();
-                    } else {
-                      video.pause();
-                    }
-                  }}
-                  className="bg-black/50 p-2 rounded-full text-white"
-                >
-                  {activeVideo === i && !videoRefs.current[i]?.paused ? (
-                    <PauseIcon className="w-4 h-4" />
-                  ) : (
-                    <PlayIcon className="w-4 h-4" />
-                  )}
-                </button>
+                      if (video.paused) {
+                        setActiveVideo(i);
+                        video.play();
+                      } else {
+                        video.pause();
+                      }
+                    }}
+                    className="bg-black/50 p-2 rounded-full text-white"
+                  >
+                    {activeVideo === i && !videoRefs.current[i]?.paused ? (
+                      <PauseIcon className="w-4 h-4" />
+                    ) : (
+                      <PlayIcon className="w-4 h-4" />
+                    )}
+                  </button>
 
-                {/* MUTE */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setMuted((m) => !m);
-                  }}
-                  className="bg-black/50 p-2 rounded-full text-white"
-                >
-                  {muted ? (
-                    <SpeakerXMarkIcon className="w-4 h-4" />
-                  ) : (
-                    <SpeakerWaveIcon className="w-4 h-4" />
-                  )}
-                </button>
+                  {/* MUTE */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMuted((m) => !m);
+                    }}
+                    className="bg-black/50 p-2 rounded-full text-white"
+                  >
+                    {muted ? (
+                      <SpeakerXMarkIcon className="w-4 h-4" />
+                    ) : (
+                      <SpeakerWaveIcon className="w-4 h-4" />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => handleDelete(s._id)}
+                    className="bg-gray-50/70 text-gray-800 rounded-full p-2 transition"
+                  >
+                    <TrashIcon className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <p className="text-center mt-2">{s.title}</p>
               </div>
-
-              <p className="text-center mt-2">{s.title}</p>
-            </div>
+            </>
           ))}
         </Slider>
       </div>
+
+      <CustomModal
+        open={open}
+        setOpen={setOpen}
+        title="Crée une story"
+        handleSubmit={handleSubmit}
+        message={
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Left Column: Video Preview */}
+            <div
+              className="flex items-center justify-center w-[300px] md:w-full h-[250px] md:h-[350px] border rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100"
+              onClick={() =>
+                !newSlide.video &&
+                document.getElementById("video-upload").click()
+              }
+            >
+              {newSlide.video ? (
+                <video
+                  controls
+                  //autoPlay
+                  loop
+                  className="w-full h-full object-cover rounded-lg"
+                  src={videoSrc}
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center text-gray-500">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-12 h-12 mb-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  <span>Click to upload video</span>
+                </div>
+              )}
+
+              {/* Hidden input */}
+              <input
+                id="video-upload"
+                type="file"
+                accept="video/*"
+                onChange={(e) =>
+                  setNewSlide({ ...newSlide, video: e.target.files[0] })
+                }
+                className="hidden"
+              />
+            </div>
+
+            {/* Right Column: Form */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                console.log("Submit new slide:", newSlide);
+                setOpen(false); // close after save
+              }}
+              className="space-y-4"
+            >
+              {/* Title */}
+              <Input
+                label="Title"
+                type="text"
+                placeholder="Title"
+                value={newSlide.title}
+                onChange={(e) =>
+                  setNewSlide({ ...newSlide, title: e.target.value })
+                }
+                className="w-full border px-3 py-2 rounded-md focus:ring focus:ring-indigo-300"
+                required
+              />
+
+              {/* Description */}
+              <Textarea
+                label="Description"
+                placeholder="Description"
+                value={newSlide.description}
+                onChange={(e) =>
+                  setNewSlide({ ...newSlide, description: e.target.value })
+                }
+                className="w-full border px-3 py-2 rounded-md focus:ring focus:ring-indigo-300"
+                required
+              />
+
+              {/* CTA */}
+              <Input
+                type="text"
+                placeholder="CTA (e.g. Shop Now)"
+                value={newSlide.cta}
+                onChange={(e) =>
+                  setNewSlide({ ...newSlide, cta: e.target.value })
+                }
+                className="w-full border px-3 py-2 rounded-md focus:ring focus:ring-indigo-300"
+              />
+              <button onClick={handleSubmit}>submit</button>
+            </form>
+          </div>
+        }
+      />
 
       {fullscreen && (
         <FullscreenReels

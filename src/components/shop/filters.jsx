@@ -37,7 +37,7 @@ import {
   setProductsPerPage,
   setSortOption,
 } from "../../redux/shopFilters/pageOptions";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getCategories } from "../../functions/Categories";
 import { getProductFilters } from "../../functions/product";
 
@@ -57,7 +57,10 @@ export default function Filters({ mobileFiltersOpen, setMobileFiltersOpen }) {
       try {
         // Categories
         const { data: catData } = await getCategories();
-        setCategories(catData.map((c) => ({ value: c.name, label: c.name })));
+        // console.log("Fetched categories for filters:", catData);
+        setCategories(
+          catData.map((c) => ({ value: c._id, label: c.name, slug: c.slug })),
+        );
 
         // Colors & Sizes
         const { colors: colorsData, sizes: sizesData } =
@@ -83,6 +86,9 @@ export default function Filters({ mobileFiltersOpen, setMobileFiltersOpen }) {
     { id: "color", name: "Color", options: colors },
     { id: "size", name: "Size", options: sizes },
   ];
+
+  const location = useLocation();
+  const isCategoryPage = location.pathname.startsWith("/category"); // adjust to your category route
 
   return (
     <>
@@ -190,6 +196,7 @@ export default function Filters({ mobileFiltersOpen, setMobileFiltersOpen }) {
           </DialogPanel>
         </div>
       </Dialog>
+
       <form className="hidden space-y-2 lg:block">
         <Disclosure
           as="div"
@@ -218,6 +225,7 @@ export default function Filters({ mobileFiltersOpen, setMobileFiltersOpen }) {
             />
           </DisclosurePanel>
         </Disclosure>
+
         {filters.map((section) => (
           <Disclosure
             key={section.id}
@@ -247,15 +255,16 @@ export default function Filters({ mobileFiltersOpen, setMobileFiltersOpen }) {
                           id={`filter-${section.id}-${optionIdx}`}
                           type="checkbox"
                           checked={
-                            selected[section.id]?.includes(option.value) ||
-                            false
+                            selected[section.id]?.includes(
+                              option.slug || option.label,
+                            ) || false
                           }
                           onChange={() =>
                             dispatch(
                               toggleFilter({
                                 sectionId: section.id,
-                                value: option.value,
-                              })
+                                value: option.slug || option.label,
+                              }),
                             )
                           }
                           className="h-4 w-4 rounded-sm border-gray-300 text-indigo-600 focus:ring-indigo-500"

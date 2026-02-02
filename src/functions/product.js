@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// const API_BASE_URL = "http://localhost:8000/api";
+//const API_BASE_URL = "http://localhost:8000/api";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Create a new product
@@ -20,7 +20,7 @@ export const updateProduct = async (slug, formData) => {
   return await axios.put(
     `${API_BASE_URL}/product/update/${slug}`,
     formData,
-    config
+    config,
   );
 };
 
@@ -88,7 +88,7 @@ export const getProductBySlug = async (slug) => {
 // ✅ Set product of the year
 export const setProductOfTheYear = async (slug) => {
   const { data } = await axios.put(
-    `${API_BASE_URL}/product/specialOffre/${slug}`
+    `${API_BASE_URL}/product/specialOffre/${slug}`,
   );
   return data;
 };
@@ -102,13 +102,17 @@ export const getProductsByCategory = async ({
   category,
   page = 0,
   itemsPerPage = 12,
-  sort = "createdAt",
+  sort = "new",
+  filters = {},
 }) => {
-  const { data } = await axios.get(
-    `${API_BASE_URL}/products/category/${category}?page=${page}&itemsPerPage=${itemsPerPage}&sort=${sort}`
-  );
-  return data;
+  return await axios.post(`${API_BASE_URL}/products/category/${category}`, {
+    page,
+    itemsPerPage,
+    sort,
+    filters,
+  });
 };
+
 // export const searchProducts = async (
 //   query,
 //   page,

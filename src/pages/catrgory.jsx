@@ -16,6 +16,7 @@ import { setCurrentPage } from "../redux/shopFilters/pageOptions";
 
 export default function Category() {
   const { Category } = useParams();
+  const filter = useSelector((state) => state.filters);
 
   const [products, setProducts] = useState([]);
   const [packs, setPacks] = useState([]);
@@ -25,7 +26,7 @@ export default function Category() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const { currentPage, productsPerPage, sortOption } = useSelector(
-    (state) => state.pageOptions
+    (state) => state.pageOptions,
   );
   const view = useSelector((state) => state.view.view);
   const dispatch = useDispatch();
@@ -63,17 +64,19 @@ export default function Category() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+      // console.log("🔄 Fetching products and packs for category:", Category);
       try {
         const productData = await getProductsByCategory({
           category: Category,
           page: currentPage,
           itemsPerPage: productsPerPage,
+          filters: filter.selected,
           sort: sortOption,
         });
-
-        setProducts(normalizeMediaSrc(productData.products || []));
-        setTotalPages(productData.totalPages);
-        setTotalProducts(productData.totalProducts);
+        console.log("Fetched products for category:", productData);
+        setProducts(normalizeMediaSrc(productData.data.products || []));
+        setTotalPages(productData.data.totalPages);
+        setTotalProducts(productData.data.totalProducts);
 
         const packData = await getPacksByCategory({
           category: Category,
@@ -91,7 +94,7 @@ export default function Category() {
     };
 
     fetchData();
-  }, [Category, currentPage, productsPerPage, sortOption]);
+  }, [Category, currentPage, productsPerPage, sortOption, filter]);
 
   const start = currentPage * productsPerPage + 1;
   const end = Math.min((currentPage + 1) * productsPerPage, totalProducts);

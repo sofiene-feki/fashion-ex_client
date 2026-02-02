@@ -20,7 +20,7 @@ export default function Shop() {
 
   const view = useSelector((state) => state.view.view);
   const { currentPage, productsPerPage, sortOption } = useSelector(
-    (state) => state.pageOptions
+    (state) => state.pageOptions,
   );
   const filter = useSelector((state) => state.filters);
 
