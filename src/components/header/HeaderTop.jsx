@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { PauseIcon, PlayIcon } from "@heroicons/react/24/outline";
 
 const MESSAGES = [
-  "Livraison offerte dès 299 TND d’achat",
-  "Échange possible sous 14 jours",
+  "Livraison GRATUITE sur tous les produits",
+  "-10 % sur Chic Girl — stocks limités !",
 ];
 
 const DURATION = 4500; // loader duration

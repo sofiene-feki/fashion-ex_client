@@ -31,11 +31,19 @@ export default function CheckoutPage() {
 
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
-    0
+    0,
   );
 
-  const shipping = subtotal > 0 ? 8 : 0;
+  const shipping = subtotal > 0 ? 0 : 0;
   const total = subtotal + shipping;
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("fr-TN", {
+      style: "currency",
+      currency: "TND",
+      minimumFractionDigits: 3,
+    }).format(price);
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -139,7 +147,7 @@ export default function CheckoutPage() {
               >
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-center shadow-xl transition-all">
                   <Dialog.Title className="text-2xl font-header text-gray-800">
-                    😊 Bienvenue {formData.fullName} 
+                    😊 Bienvenue {formData.fullName}
                   </Dialog.Title>
                   <p className="mt-4 font-header text-gray-600">
                     Merci pour votre commande. Nous vous confirmerons votre
@@ -169,7 +177,9 @@ export default function CheckoutPage() {
       <div className="max-w-7xl md:my-15  mx-auto p-2 md:p-6  grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* ORDER FORM */}
         <div className="md:col-span-1 bg-white shadow-md border border-gray-100 p-2 md:p-6 rounded-lg">
-          <h2 className="text-2xl font-heading mb-4">Informations de livraison</h2>
+          <h2 className="text-2xl font-heading mb-4">
+            Informations de livraison
+          </h2>
           <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Full Name */}
             <div>
@@ -442,12 +452,14 @@ export default function CheckoutPage() {
                 <span className="text-gray-800">{subtotal} DT</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Livraison</span>
+                <span className="text-gray-600">
+                  Livraison {shipping === 0 && "(gratuit)"}
+                </span>
                 <span className="text-gray-800">{shipping} DT</span>
               </div>
               <div className="flex justify-between pt-3 border-t border-gray-200 text-base md:text-lg font-bold text-gray-900">
                 <span>Total</span>
-                <span>{total} DT</span>
+                <span> {formatPrice(total)}</span>
               </div>
             </div>
           </div>
