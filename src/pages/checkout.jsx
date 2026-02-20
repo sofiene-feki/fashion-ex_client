@@ -34,7 +34,7 @@ export default function CheckoutPage() {
     0,
   );
 
-  const shipping = subtotal > 0 ? 0 : 0;
+  const shipping = subtotal > 0 ? 8 : 0;
   const total = subtotal + shipping;
 
   const formatPrice = (price) => {

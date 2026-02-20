@@ -183,7 +183,7 @@ export default function OrderDetail() {
                     </td>
 
                     {/* Example price/qty column (if you want to keep them) */}
-                                        <td className="p-2 border text-center">{unitPrice} dt</td>
+                    <td className="p-2 border text-center">{unitPrice} dt</td>
                     <td className="p-2 border text-center">{item.quantity}</td>
                     <td className="p-2 border text-center">{totalPrice} dt</td>
                   </tr>
@@ -213,8 +213,8 @@ export default function OrderDetail() {
         <div className="mt-8 md:text-sm text-xs flex justify-between text-center text-gray-500 print:text-black print:mt-12">
           <p className="mb-1"></p>
           <p className="mb-1">
-            Tél : +216 12 345 678{" "}
-            <span className="ml-2">Email : contact@artisantBargaoui.tn</span>
+            Tél : +216 27 417 641{" "}
+            <span className="ml-2">Email : contact@clindoeilstore.com</span>
           </p>
         </div>
       </div>

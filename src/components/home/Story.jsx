@@ -211,42 +211,45 @@ export default function Story() {
         </div>
 
         <Slider {...(isMobile ? mobileSettings : desktopSettings)}>
-          <>
-            {" "}
-            <div
-              onClick={() => setOpen(true)}
-              className="relative flex flex-col items-center justify-center h-[300px] md:h-[350px] bg-gray-50 border border-gray-300 rounded-xl mx-2 cursor-pointer hover:bg-gray-200 transition"
-            >
-              {/* Middle logo */}
-              <img
-                className="h-36 w-auto"
-                src={logoBlack}
-                alt="Your Company"
-                draggable={false}
-              />
+          {userInfo && (
+            <>
+              {" "}
+              <div
+                onClick={() => setOpen(true)}
+                className="relative flex flex-col items-center justify-center h-[300px] md:h-[350px] bg-gray-50 border border-gray-300 rounded-xl mx-2 cursor-pointer hover:bg-gray-200 transition"
+              >
+                {/* Middle logo */}
+                <img
+                  className="h-36 w-auto"
+                  src={logoBlack}
+                  alt="Your Company"
+                  draggable={false}
+                />
 
-              {/* Bottom circle with + */}
-              <div className="absolute -bottom-6 w-12 h-12 rounded-full bg-white border border-gray-300 flex items-center justify-center shadow-md">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6 text-blue-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
+                {/* Bottom circle with + */}
+                <div className="absolute -bottom-6 w-12 h-12 rounded-full bg-white border border-gray-300 flex items-center justify-center shadow-md">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-6 h-6 text-blue-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                </div>
               </div>
-            </div>
-            <p className="mt-8 text-center text-gray-700 font-medium">
-              Crée une story
-            </p>
-          </>
+              <p className="mt-8 text-center text-gray-700 font-medium">
+                Crée une story
+              </p>
+            </>
+          )}
+
           {slides.map((s, i) => (
             <>
               <div
@@ -311,12 +314,14 @@ group-hover:shadow-[0_20px_60px_rgba(249,158,154,0.22)]
                       <SpeakerWaveIcon className="w-4 h-4" />
                     )}
                   </button>
-                  <button
-                    onClick={() => handleDelete(s._id)}
-                    className="bg-gray-50/70 text-gray-800 rounded-full p-2 transition"
-                  >
-                    <TrashIcon className="w-5 h-5" />
-                  </button>
+                  {userInfo && (
+                    <button
+                      onClick={() => handleDelete(s._id)}
+                      className="bg-gray-50/70 text-gray-800 rounded-full p-2 transition"
+                    >
+                      <TrashIcon className="w-5 h-5" />
+                    </button>
+                  )}
                 </div>
 
                 <p className="text-center mt-2">{s.title}</p>
